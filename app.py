@@ -133,7 +133,7 @@ html, body {
 }
 
 /* card: ahora “row” institucional */
-.card {
+.sc-card {
   display:flex;
   align-items:center;           /* centra verticalmente icon+texto+arrow */
   justify-content:space-between;
@@ -148,7 +148,7 @@ html, body {
   transition: all 140ms ease-out;
 }
 
-.card:hover {
+.sc-card:hover {
   transform: translateY(-2px);
   border-color: rgba(82,224,208,0.35);
   box-shadow: 0 24px 60px rgba(0,0,0,0.42);
@@ -281,7 +281,7 @@ def card(title, subtitle, icon, url):
         href=url,
         target="_blank",
         children=html.Div(
-            className="card",
+            className="sc-card",
             children=[
                 html.Div(
                     className="left",
@@ -339,3 +339,4 @@ app.layout = html.Div(
 
 if __name__ == "__main__":
     app.run(debug=True)
+
