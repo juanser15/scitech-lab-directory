@@ -43,7 +43,7 @@ TARGETS = {
 }
 
 # ======================
-# CSS (1 columna + cards MÁS BAJAS + mejor contraste)
+# CSS (1 columna + align-left + arrow right centered + texto legible)
 # ======================
 THEME_CSS = """
 html, body {
@@ -64,7 +64,7 @@ html, body {
   padding: 18px 24px;
 }
 
-/* overlay atrás del contenido (para legibilidad sin “lavar” la UI) */
+/* overlay atrás del contenido */
 .frame:before{
   content:"";
   position:absolute; inset:0;
@@ -105,7 +105,7 @@ html, body {
   margin-top: 6px;
 }
 
-/* ticker (widget real) */
+/* ticker */
 .ticker {
   width: 900px;
   height: 56px;
@@ -123,22 +123,22 @@ html, body {
   align-items:center;
 }
 
-/* 1 columna ALWAYS + ancho “portal” */
+/* 1 columna ALWAYS */
 .cards {
-  width: min(860px, 94vw);
+  width: min(980px, 94vw);
   display:grid;
   grid-template-columns: 1fr;
-  gap: 14px;            /* ↓ menos espacio entre cards */
+  gap: 16px;
   margin: 0 auto;
 }
 
-/* card (AÚN MÁS BAJA / compacta) */
+/* card: ahora “row” institucional */
 .card {
   display:flex;
-  align-items:center;
+  align-items:center;           /* centra verticalmente icon+texto+arrow */
   justify-content:space-between;
-  padding: 10px 20px;   /* ↓ más baja */
-  border-radius: 11px;  /* más tight */
+  padding: 14px 22px;           /* altura razonable, no gigante */
+  border-radius: 12px;
   border: 1px solid rgba(233,238,247,0.18);
   background: linear-gradient(180deg, rgba(18,28,46,0.72), rgba(18,28,46,0.34));
   box-shadow: 0 18px 48px rgba(0,0,0,0.35);
@@ -154,42 +154,62 @@ html, body {
   box-shadow: 0 24px 60px rgba(0,0,0,0.42);
 }
 
+/* left block: icon + text, alineado a la izquierda */
 .left {
   display:flex;
   align-items:center;
-  gap: 12px;            /* ↓ */
+  gap: 14px;
+  min-width: 0;                 /* permite ellipsis si hace falta */
 }
 
+/* icon */
 .icon {
-  width: 34px;          /* ↓ */
-  height: 34px;         /* ↓ */
-  border-radius: 10px;  /* ↓ */
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   display:flex;
   align-items:center;
   justify-content:center;
   background: rgba(0,0,0,0.22);
   border: 1px solid rgba(255,255,255,0.12);
-  font-size: 18px;      /* ↓ */
+  font-size: 20px;
   color: rgba(233,238,247,0.90);
+  flex: 0 0 auto;
+}
+
+/* text block (left aligned) */
+.textblock {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;       /* <-- align left real */
+  justify-content:center;
+  text-align:left;
+  min-width: 0;
 }
 
 .title {
-  font-size: 18px;      /* ↓ */
+  font-size: 20px;              /* ↑ más grande */
   font-weight: 650;
   color: rgba(233,238,247,0.92);
-  line-height: 1.12;
+  line-height: 1.15;
 }
 
 .sub {
-  margin-top: 1px;      /* ↓ */
-  font-size: 10px;      /* ↓ */
+  margin-top: 3px;
+  font-size: 12px;              /* ↑ más grande */
   opacity: .70;
 }
 
+/* arrow a la derecha, centrado verticalmente */
 .arrow {
-  font-size: 20px;      /* ↓ */
+  font-size: 26px;              /* ↑ */
   opacity: .55;
-  margin-left: 14px;
+  line-height: 1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width: 30px;
+  flex: 0 0 auto;
 }
 
 /* footer */
@@ -207,6 +227,7 @@ a, a:hover, a:visited { color: inherit; text-decoration: none; }
 
 @media (max-width: 980px) {
   .ticker { width: 100%; }
+  .cards { width: min(940px, 94vw); }
 }
 """
 
@@ -267,10 +288,11 @@ def card(title, subtitle, icon, url):
                     children=[
                         html.Div(html.I(className=f"bi {icon}"), className="icon"),
                         html.Div(
+                            className="textblock",
                             children=[
                                 html.Div(title, className="title"),
                                 html.Div(subtitle, className="sub"),
-                            ]
+                            ],
                         ),
                     ],
                 ),
