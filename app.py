@@ -108,7 +108,7 @@ html, body {
 }
 
 .cards {
-  width: min(760px, 94vw);      /* más “portal” y menos ancho */
+  width: min(700px, 94vw);      /* más “portal” y menos ancho */
   display: grid;
   grid-template-columns: 1fr;   /* 1 columna ALWAYS */
   gap: 18px;
@@ -292,3 +292,4 @@ app.layout = html.Div(
 if __name__ == "__main__":
 
     app.run(debug=True)
+
