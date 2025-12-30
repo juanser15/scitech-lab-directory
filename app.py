@@ -108,10 +108,11 @@ html, body {
 }
 
 .cards {
-  width: min(1150px, 96vw);
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px 26px;
+  width: min(760px, 94vw);      /* más “portal” y menos ancho */
+  display: grid;
+  grid-template-columns: 1fr;   /* 1 columna ALWAYS */
+  gap: 18px;
+  margin: 0 auto;
 }
 
 .card {
@@ -289,4 +290,5 @@ app.layout = html.Div(
 )
 
 if __name__ == "__main__":
+
     app.run(debug=True)
