@@ -43,7 +43,7 @@ TARGETS = {
 }
 
 # ======================
-# CSS (1 columna + cards más bajas + mejor contraste)
+# CSS (1 columna + cards MÁS BAJAS + mejor contraste)
 # ======================
 THEME_CSS = """
 html, body {
@@ -128,17 +128,17 @@ html, body {
   width: min(860px, 94vw);
   display:grid;
   grid-template-columns: 1fr;
-  gap: 18px;
+  gap: 14px;            /* ↓ menos espacio entre cards */
   margin: 0 auto;
 }
 
-/* card (más baja/compacta) */
+/* card (AÚN MÁS BAJA / compacta) */
 .card {
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding: 14px 22px;  /* ↓ menos alta */
-  border-radius: 12px; /* más tight */
+  padding: 10px 20px;   /* ↓ más baja */
+  border-radius: 11px;  /* más tight */
   border: 1px solid rgba(233,238,247,0.18);
   background: linear-gradient(180deg, rgba(18,28,46,0.72), rgba(18,28,46,0.34));
   box-shadow: 0 18px 48px rgba(0,0,0,0.35);
@@ -157,39 +157,39 @@ html, body {
 .left {
   display:flex;
   align-items:center;
-  gap: 14px;
+  gap: 12px;            /* ↓ */
 }
 
 .icon {
-  width: 40px;         /* ↓ */
-  height: 40px;        /* ↓ */
-  border-radius: 12px;
+  width: 34px;          /* ↓ */
+  height: 34px;         /* ↓ */
+  border-radius: 10px;  /* ↓ */
   display:flex;
   align-items:center;
   justify-content:center;
   background: rgba(0,0,0,0.22);
   border: 1px solid rgba(255,255,255,0.12);
-  font-size: 20px;     /* ↓ */
+  font-size: 18px;      /* ↓ */
   color: rgba(233,238,247,0.90);
 }
 
 .title {
-  font-size: 20px;     /* ↓ */
+  font-size: 18px;      /* ↓ */
   font-weight: 650;
   color: rgba(233,238,247,0.92);
-  line-height: 1.15;
+  line-height: 1.12;
 }
 
 .sub {
-  margin-top: 2px;     /* ↓ */
-  font-size: 11px;     /* ↓ */
+  margin-top: 1px;      /* ↓ */
+  font-size: 10px;      /* ↓ */
   opacity: .70;
 }
 
 .arrow {
-  font-size: 22px;     /* ↓ */
+  font-size: 20px;      /* ↓ */
   opacity: .55;
-  margin-left: 16px;
+  margin-left: 14px;
 }
 
 /* footer */
