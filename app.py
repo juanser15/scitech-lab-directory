@@ -34,7 +34,7 @@ auth = dash_auth.BasicAuth(app, VALID_USERS)
 app.title = "SciTech Lab"
 
 # ======================
-# TARGETS (STAGING)
+# TARGETS
 # ======================
 TARGETS = {
     "SigmaLab": "https://www.sci-techlab.com",
@@ -44,7 +44,7 @@ TARGETS = {
 }
 
 # ======================
-# CSS (1 columna + align-left + arrow right centered + texto legible)
+# CSS (UI POLISHING)
 # ======================
 THEME_CSS = """
 html, body {
@@ -54,7 +54,7 @@ html, body {
   background-size: cover;
   overflow: hidden;
   color: #E9EEF7;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
 }
 
 #_dash-app-content { height: 100vh; }
@@ -65,24 +65,21 @@ html, body {
   padding: 18px 24px;
 }
 
-/* overlay atrás del contenido */
+/* legibilidad sin “lavar” el background */
 .frame:before{
   content:"";
   position:absolute; inset:0;
   z-index: 0;
   background:
-    radial-gradient(1200px 700px at 20% 18%, rgba(0,0,0,0.10), transparent 60%),
-    linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.40));
+    radial-gradient(1200px 700px at 20% 18%, rgba(0,0,0,0.12), transparent 60%),
+    radial-gradient(900px 520px at 78% 38%, rgba(0,0,0,0.18), transparent 55%),
+    linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.55));
   pointer-events:none;
 }
 
-/* contenido encima del overlay */
-.topbar, .content, .footer {
-  position: relative;
-  z-index: 1;
-}
+.topbar, .content, .footer { position: relative; z-index: 1; }
 
-/* top bar */
+/* Top bar */
 .topbar {
   height: 64px;
   display:flex;
@@ -93,30 +90,32 @@ html, body {
 
 .logo {
   letter-spacing: 0.14em;
-  font-weight: 650;
+  font-weight: 700;
   font-size: 26px;
-  color: rgba(233,238,247,0.92);
+  color: rgba(233,238,247,0.95);
   line-height: 1;
+  text-transform: uppercase;
 }
 .logo small {
   display:block;
   font-size: 10px;
   letter-spacing: 0.32em;
-  opacity: .75;
+  opacity: .78;
   margin-top: 6px;
 }
 
-/* ticker */
+/* Ticker (desktop) */
 .ticker {
   width: 900px;
   height: 56px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.18);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.25);
 }
 
-/* content */
+/* Content */
 .content {
   height: calc(100vh - 128px);
   display:flex;
@@ -124,111 +123,119 @@ html, body {
   align-items:center;
 }
 
-/* 1 columna ALWAYS */
+/* Cards layout: one column always */
 .cards {
   width: min(980px, 94vw);
   display:grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 14px;
   margin: 0 auto;
 }
 
-/* card: ahora “row” institucional */
+/* Card */
 .sc-card {
   display:flex;
-  align-items:center;           /* centra verticalmente icon+texto+arrow */
+  align-items:center;
   justify-content:space-between;
-  padding: 14px 22px;           /* altura razonable, no gigante */
-  border-radius: 12px;
-  border: 1px solid rgba(233,238,247,0.18);
-  background: linear-gradient(180deg, rgba(18,28,46,0.72), rgba(18,28,46,0.34));
-  box-shadow: 0 18px 48px rgba(0,0,0,0.35);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  padding: 16px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(233,238,247,0.16);
+  background: linear-gradient(180deg, rgba(16,26,44,0.70), rgba(16,26,44,0.30));
+  box-shadow: 0 18px 46px rgba(0,0,0,0.38);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
   cursor:pointer;
-  transition: all 140ms ease-out;
+  transition: transform 140ms ease-out, border-color 140ms ease-out, box-shadow 140ms ease-out, background 140ms ease-out;
 }
 
 .sc-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(82,224,208,0.35);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.42);
+  border-color: rgba(82,224,208,0.32);
+  box-shadow: 0 26px 64px rgba(0,0,0,0.45);
+  background: linear-gradient(180deg, rgba(18,30,50,0.78), rgba(18,30,50,0.34));
 }
 
-/* left block: icon + text, alineado a la izquierda */
 .left {
   display:flex;
   align-items:center;
   gap: 14px;
-  min-width: 0;                 /* permite ellipsis si hace falta */
+  min-width: 0;
 }
 
-/* icon */
 .icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   display:flex;
   align-items:center;
   justify-content:center;
-  background: rgba(0,0,0,0.22);
-  border: 1px solid rgba(255,255,255,0.12);
-  font-size: 20px;
-  color: rgba(233,238,247,0.90);
+  background: rgba(0,0,0,0.20);
+  border: 1px solid rgba(255,255,255,0.10);
+  font-size: 21px;
+  color: rgba(233,238,247,0.92);
   flex: 0 0 auto;
 }
 
-/* text block (left aligned) */
 .textblock {
   display:flex;
   flex-direction:column;
-  align-items:flex-start;       /* <-- align left real */
+  align-items:flex-start; /* left aligned */
   justify-content:center;
   text-align:left;
   min-width: 0;
 }
 
 .title {
-  font-size: 20px;              /* ↑ más grande */
-  font-weight: 650;
-  color: rgba(233,238,247,0.92);
-  line-height: 1.15;
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(233,238,247,0.95);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
 .sub {
-  margin-top: 3px;
-  font-size: 12px;              /* ↑ más grande */
-  opacity: .70;
+  margin-top: 4px;
+  font-size: 13px;
+  opacity: .78;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 72vw; /* ayuda mobile */
 }
 
-/* arrow a la derecha, centrado verticalmente */
 .arrow {
-  font-size: 26px;              /* ↑ */
+  font-size: 28px;
   opacity: .55;
   line-height: 1;
   display:flex;
   align-items:center;
   justify-content:center;
-  width: 30px;
+  width: 34px;
   flex: 0 0 auto;
 }
 
-/* footer */
+/* Footer */
 .footer {
   height: 64px;
   display:flex;
   justify-content:space-between;
   align-items:center;
   font-size: 12px;
-  opacity: .70;
+  opacity: .75;
 }
 
-/* links sin underline */
 a, a:hover, a:visited { color: inherit; text-decoration: none; }
 
-@media (max-width: 980px) {
-  .ticker { width: 100%; }
-  .cards { width: min(940px, 94vw); }
+/* Mobile polish */
+@media (max-width: 820px) {
+  .frame { padding: 14px 14px; }
+  .ticker { display: none; } /* evita glitch/espacio raro mobile */
+  .topbar { height: 56px; }
+  .logo { font-size: 22px; letter-spacing: 0.12em; }
+  .sc-card { padding: 14px 16px; border-radius: 14px; }
+  .title { font-size: 20px; }
+  .sub { font-size: 12px; max-width: 64vw; }
+  .icon { width: 44px; height: 44px; border-radius: 14px; }
 }
 """
 
@@ -324,7 +331,7 @@ app.layout = html.Div(
                     card("SigmaLab", "Correlation • regimes • clustering", "bi-grid-3x3-gap", TARGETS["SigmaLab"]),
                     card("GroWise Dashboard", "Performance • benchmarks • attribution", "bi-graph-up-arrow", TARGETS["GroWise"]),
                     card("SciTech Atlas", "Market + quant context • curated research", "bi-globe2", TARGETS["Atlas"]),
-                    card("Client360", "Customers Management", "bi-globe3", TARGETS["Client360"])
+                    card("Client360", "Client coverage • CRM • activity", "bi-person-badge", TARGETS["Client360"]),
                 ],
             ),
         ),
@@ -340,6 +347,4 @@ app.layout = html.Div(
 )
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
+    app.run_server(debug=True)
