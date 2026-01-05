@@ -40,6 +40,7 @@ TARGETS = {
     "SigmaLab": "https://www.sci-techlab.com",
     "GroWise": "https://GROWISE-XXXX.up.railway.app",
     "Atlas": "https://ATLAS-XXXX.up.railway.app",
+    "Client360": "https://script.google.com/a/macros/sci.tech/s/AKfycby_6WGTvIZ7MNqJOLF32s-uucxGdwRQj7zmP-FPahZ7gsZYZLQxQPWpIBuWvd_htFOs/exec",
 }
 
 # ======================
@@ -323,6 +324,7 @@ app.layout = html.Div(
                     card("SigmaLab", "Correlation • regimes • clustering", "bi-grid-3x3-gap", TARGETS["SigmaLab"]),
                     card("GroWise Dashboard", "Performance • benchmarks • attribution", "bi-graph-up-arrow", TARGETS["GroWise"]),
                     card("SciTech Atlas", "Market + quant context • curated research", "bi-globe2", TARGETS["Atlas"]),
+                    card("Client360", "Customers Management", "bi-globe3", TARGETS["Client360"])
                 ],
             ),
         ),
@@ -339,4 +341,5 @@ app.layout = html.Div(
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
