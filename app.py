@@ -28,7 +28,6 @@ app = dash.Dash(
     external_stylesheets=external_stylesheets,
     assets_folder="assets",
     assets_url_path="/assets",
-    suppress_callback_exceptions=True,
 )
 server = app.server
 auth = dash_auth.BasicAuth(app, VALID_USERS)
@@ -45,7 +44,7 @@ TARGETS = {
 }
 
 # ======================
-# CSS (Institutional polishing)
+# CSS (1 columna + estilo más institucional)
 # ======================
 THEME_CSS = """
 html, body {
@@ -66,17 +65,18 @@ html, body {
   padding: 18px 24px;
 }
 
-/* overlay behind content for readability */
+/* overlay atrás del contenido */
 .frame:before{
   content:"";
   position:absolute; inset:0;
   z-index: 0;
   background:
-    radial-gradient(1200px 700px at 18% 14%, rgba(0,0,0,0.10), transparent 60%),
-    linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.46));
+    radial-gradient(1200px 700px at 20% 18%, rgba(0,0,0,0.10), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.42));
   pointer-events:none;
 }
 
+/* contenido encima del overlay */
 .topbar, .content, .footer {
   position: relative;
   z-index: 1;
@@ -93,17 +93,16 @@ html, body {
 
 .logo {
   letter-spacing: 0.14em;
-  font-weight: 660;
+  font-weight: 650;
   font-size: 26px;
   color: rgba(233,238,247,0.92);
   line-height: 1;
-  user-select:none;
 }
 .logo small {
   display:block;
   font-size: 10px;
   letter-spacing: 0.32em;
-  opacity: .78;
+  opacity: .75;
   margin-top: 6px;
 }
 
@@ -113,8 +112,8 @@ html, body {
   height: 56px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.20);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.22);
 }
 
 /* content */
@@ -125,42 +124,42 @@ html, body {
   align-items:center;
 }
 
-/* one column, portal width */
+/* 1 columna ALWAYS */
 .cards {
-  width: min(1020px, 94vw);
+  width: min(980px, 94vw);
   display:grid;
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: 16px;
   margin: 0 auto;
 }
 
-/* link wrapper - keeps hover consistent */
+/* link wrapper */
 .sc-link { display:block; }
 
-/* institutional row card */
+/* card row */
 .sc-card {
   display:flex;
   align-items:center;
   justify-content:space-between;
   padding: 14px 22px;
   border-radius: 14px;
-  border: 1px solid rgba(233,238,247,0.14);
-  background: linear-gradient(180deg, rgba(14,22,38,0.74), rgba(14,22,38,0.40));
-  box-shadow: 0 18px 52px rgba(0,0,0,0.34);
+  border: 1px solid rgba(233,238,247,0.16);
+  background:
+    linear-gradient(180deg, rgba(18,28,46,0.72), rgba(18,28,46,0.34));
+  box-shadow: 0 18px 52px rgba(0,0,0,0.36);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   cursor:pointer;
-  transition: transform 140ms ease-out, border-color 140ms ease-out, box-shadow 140ms ease-out, background 140ms ease-out;
+  transition: all 160ms ease-out;
 }
 
-/* subtle hover (no retail bounce) */
 .sc-card:hover {
-  transform: translateY(-0.5px);
-  border-color: rgba(120,210,200,0.30);
-  box-shadow: 0 22px 60px rgba(0,0,0,0.40);
-  background: linear-gradient(180deg, rgba(16,26,44,0.78), rgba(16,26,44,0.44));
+  transform: translateY(-2px);
+  border-color: rgba(140,190,255,0.22);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.44);
 }
 
+/* left block */
 .left {
   display:flex;
   align-items:center;
@@ -179,7 +178,7 @@ html, body {
   background: rgba(0,0,0,0.22);
   border: 1px solid rgba(255,255,255,0.10);
   font-size: 20px;
-  color: rgba(233,238,247,0.90);
+  color: rgba(233,238,247,0.92);
   flex: 0 0 auto;
 }
 
@@ -195,30 +194,55 @@ html, body {
 
 .title {
   font-size: 20px;
-  font-weight: 670;
-  color: rgba(233,238,247,0.93);
-  line-height: 1.12;
-  letter-spacing: -0.01em;
+  font-weight: 650;
+  color: rgba(233,238,247,0.94);
+  line-height: 1.15;
 }
 
 .sub {
   margin-top: 3px;
-  font-size: 12.5px;
-  color: rgba(233,238,247,0.62);
-  letter-spacing: 0.01em;
-  line-height: 1.1;
+  font-size: 12px;
+  opacity: .72;
 }
 
-/* right arrow */
+/* right side: badge + arrow */
+.right{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+/* status badge */
+.badge {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(34, 197, 94, 0.10);
+  color: rgba(180, 230, 205, 0.88);
+}
+
+.badge i {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+/* arrow right */
 .arrow {
-  font-size: 24px;
-  opacity: .45;
+  font-size: 26px;
+  opacity: .55;
   line-height: 1;
   display:flex;
   align-items:center;
   justify-content:center;
-  width: 30px;
-  flex: 0 0 auto;
+  width: 26px;
 }
 
 /* footer */
@@ -228,20 +252,16 @@ html, body {
   justify-content:space-between;
   align-items:center;
   font-size: 12px;
-  opacity: .72;
-  user-select:none;
+  opacity: .70;
 }
 
-/* links */
+/* links sin underline */
 a, a:hover, a:visited { color: inherit; text-decoration: none; }
 
-/* mobile polish */
 @media (max-width: 980px) {
   .ticker { width: 100%; }
-  .frame { padding: 16px 14px; }
-  .cards { width: min(980px, 96vw); gap: 12px; }
+  .cards { width: min(940px, 94vw); }
   .title { font-size: 19px; }
-  .sub { font-size: 12px; }
 }
 """
 
@@ -290,11 +310,11 @@ TV_TICKER = html.Iframe(
     className="ticker",
 )
 
-def card(title, subtitle, icon, url):
-    # IMPORTANT: target="_blank" -> abre en nueva pestaña
+
+def card(title, subtitle, icon, url, status="PROD"):
     return dcc.Link(
         href=url,
-        target="_blank",
+        target="_blank",  # <-- abre en ventana nueva (como querés)
         className="sc-link",
         children=html.Div(
             className="sc-card",
@@ -312,10 +332,23 @@ def card(title, subtitle, icon, url):
                         ),
                     ],
                 ),
-                html.Div("›", className="arrow"),
+                html.Div(
+                    className="right",
+                    children=[
+                        html.Div(
+                            className="badge",
+                            children=[
+                                html.I(className="bi bi-lock-fill"),
+                                html.Span(status),
+                            ],
+                        ),
+                        html.Div("›", className="arrow"),
+                    ],
+                ),
             ],
         ),
     )
+
 
 # ======================
 # LAYOUT
@@ -330,26 +363,47 @@ app.layout = html.Div(
                 TV_TICKER,
             ],
         ),
-
         html.Div(
             className="content",
             children=html.Div(
                 className="cards",
                 children=[
-                    card("SigmaLab", "Correlation • regimes • clustering", "bi-grid-3x3-gap", TARGETS["SigmaLab"]),
-                    card("GroWise Dashboard", "Performance • benchmarks • attribution", "bi-graph-up-arrow", TARGETS["GroWise"]),
-                    card("SciTech Atlas", "Market + quant context • curated research", "bi-globe2", TARGETS["Atlas"]),
-                    # Icono sugerido para Client360: "bi-person-badge" o "bi-people" o "bi-journal-text"
-                    card("Client360", "Client coverage • CRM • activity", "bi-person-badge", TARGETS["Client360"]),
+                    card(
+                        "SigmaLab",
+                        "Correlation • regimes • clustering",
+                        "bi-grid-3x3-gap",
+                        TARGETS["SigmaLab"],
+                        status="PROD",
+                    ),
+                    card(
+                        "GroWise Dashboard",
+                        "Performance • benchmarks • attribution",
+                        "bi-graph-up-arrow",
+                        TARGETS["GroWise"],
+                        status="PROD",
+                    ),
+                    card(
+                        "SciTech Atlas",
+                        "Market + quant context • curated research",
+                        "bi-globe2",
+                        TARGETS["Atlas"],
+                        status="PROD",
+                    ),
+                    card(
+                        "Client360",
+                        "Client coverage • activity • reporting",
+                        "bi-person-badge",
+                        TARGETS["Client360"],
+                        status="PROD",
+                    ),
                 ],
             ),
         ),
-
         html.Div(
             className="footer",
             children=[
                 html.Div("SciTech Lab"),
-                html.Div("Docs / Runbooks • Changelog • System Status"),
+                html.Div("Docs / Runbooks   •   Changelog   •   System Status"),
             ],
         ),
     ],
