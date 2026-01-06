@@ -36,10 +36,11 @@ app.title = "SciTech Lab"
 # ======================
 # TARGETS
 # ======================
+
 TARGETS = {
-    "SigmaLab": "https://www.sci-techlab.com",
-    "GroWise": "https://GROWISE-XXXX.up.railway.app",
-    "Atlas": "https://ATLAS-XXXX.up.railway.app",
+    "SigmaLab": "https://sigma.sci-techlab.com",
+    "GroWise":  "https://growise.sci-techlab.com",
+    "Atlas":    "https://atlas.sci-techlab.com",
     "Client360": "https://script.google.com/a/macros/sci.tech/s/AKfycby_6WGTvIZ7MNqJOLF32s-uucxGdwRQj7zmP-FPahZ7gsZYZLQxQPWpIBuWvd_htFOs/exec",
 }
 
@@ -411,3 +412,4 @@ app.layout = html.Div(
 
 if __name__ == "__main__":
     app.run(debug=True)
+
