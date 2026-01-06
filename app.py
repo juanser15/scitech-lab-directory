@@ -1,10 +1,12 @@
 import dash
 from dash import html, dcc
-import dash_bootstrap_components as dbc
 import dash_auth
+import dash_bootstrap_components as dbc
+import urllib.request
+import socket
 
 # ======================
-# AUTH (igual a SigmaLab por ahora)
+# AUTH
 # ======================
 VALID_USERS = {
     "john": "growise2025",
@@ -16,6 +18,7 @@ VALID_USERS = {
     "ihs@sci.tech": "Sc1T3ch_IHS_2025!",
     "leonel.lalia@sci.tech": "Sc1T3ch_LL_2025!",
     "maximiliano.markous@sci.tech": "Sc1T3ch_MM_2025!",
+    "pamela.ghisla@sci.tech": "Sc1T3ch_PG_2025!",
 }
 
 external_stylesheets = [
@@ -34,20 +37,33 @@ auth = dash_auth.BasicAuth(app, VALID_USERS)
 app.title = "SciTech Lab"
 
 # ======================
-# TARGETS
+# TARGETS (PROD)
 # ======================
-
 TARGETS = {
     "SigmaLab": "https://sigma.sci-techlab.com",
-    "GroWise":  "https://growise.sci-techlab.com",
-    "Atlas":    "https://atlas.sci-techlab.com",
+    "GroWise": "https://growise.sci-techlab.com",
+    "Atlas": "https://atlas.sci-techlab.com",
     "Client360": "https://script.google.com/a/macros/sci.tech/s/AKfycby_6WGTvIZ7MNqJOLF32s-uucxGdwRQj7zmP-FPahZ7gsZYZLQxQPWpIBuWvd_htFOs/exec",
 }
 
 # ======================
-# CSS (1 columna + estilo más institucional)
+# Health check (optional): if Atlas not reachable, show Coming Soon
 # ======================
-THEME_CSS = """
+def url_is_reachable(url: str, timeout_sec: float = 2.0) -> bool:
+    try:
+        socket.setdefaulttimeout(timeout_sec)
+        req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "SciTechDirectory/1.0"})
+        with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
+            return 200 <= resp.status < 500  # accept 3xx/4xx as "reachable" (DNS + server responds)
+    except Exception:
+        return False
+
+ATLAS_ENABLED = url_is_reachable(TARGETS["Atlas"], timeout_sec=2.0)
+
+# ======================
+# CSS
+# ======================
+THEME_CSS = r"""
 html, body {
   height: 100%;
   margin: 0;
@@ -57,7 +73,6 @@ html, body {
   color: #E9EEF7;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
 }
-
 #_dash-app-content { height: 100vh; }
 
 .frame {
@@ -66,25 +81,20 @@ html, body {
   padding: 18px 24px;
 }
 
-/* overlay atrás del contenido */
 .frame:before{
   content:"";
   position:absolute; inset:0;
   z-index: 0;
   background:
     radial-gradient(1200px 700px at 20% 18%, rgba(0,0,0,0.10), transparent 60%),
-    linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.42));
+    radial-gradient(900px 520px at 80% 25%, rgba(0,0,0,0.08), transparent 55%),
+    linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.42));
   pointer-events:none;
 }
 
-/* contenido encima del overlay */
-.topbar, .content, .footer {
-  position: relative;
-  z-index: 1;
-}
+.topbar, .content, .footer { position: relative; z-index: 1; }
 
-/* top bar */
-.topbar {
+.topbar{
   height: 64px;
   display:flex;
   align-items:center;
@@ -92,9 +102,16 @@ html, body {
   gap: 16px;
 }
 
+.brand {
+  display:flex;
+  align-items:flex-end;
+  gap: 12px;
+  min-width: 280px;
+}
+
 .logo {
-  letter-spacing: 0.14em;
-  font-weight: 650;
+  letter-spacing: 0.16em;
+  font-weight: 720;
   font-size: 26px;
   color: rgba(233,238,247,0.92);
   line-height: 1;
@@ -102,22 +119,45 @@ html, body {
 .logo small {
   display:block;
   font-size: 10px;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.34em;
   opacity: .75;
   margin-top: 6px;
 }
 
-/* ticker */
-.ticker {
-  width: 900px;
-  height: 56px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.12);
+.envpill{
+  margin-bottom: 2px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: .08em;
+  font-weight: 700;
+  color: rgba(233,238,247,0.85);
+  border: 1px solid rgba(255,255,255,0.14);
   background: rgba(0,0,0,0.22);
 }
 
-/* content */
+.ticker {
+  width: 900px;
+  height: 56px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.20);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+.markets-pill{
+  display:none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.22);
+  color: rgba(233,238,247,0.82);
+  font-weight: 650;
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
 .content {
   height: calc(100vh - 128px);
   display:flex;
@@ -125,42 +165,43 @@ html, body {
   align-items:center;
 }
 
-/* 1 columna ALWAYS */
 .cards {
-  width: min(980px, 94vw);
+  width: min(1040px, 94vw);
   display:grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 14px;
   margin: 0 auto;
 }
 
-/* link wrapper */
-.sc-link { display:block; }
-
-/* card row */
 .sc-card {
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding: 14px 22px;
-  border-radius: 14px;
-  border: 1px solid rgba(233,238,247,0.16);
-  background:
-    linear-gradient(180deg, rgba(18,28,46,0.72), rgba(18,28,46,0.34));
-  box-shadow: 0 18px 52px rgba(0,0,0,0.36);
+  padding: 16px 22px;
+  border-radius: 16px;
+  border: 1px solid rgba(233,238,247,0.14);
+  background: linear-gradient(180deg, rgba(17,27,45,0.72), rgba(17,27,45,0.34));
+  box-shadow:
+    0 18px 46px rgba(0,0,0,0.34),
+    inset 0 1px 0 rgba(255,255,255,0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   cursor:pointer;
-  transition: all 160ms ease-out;
+  transition: transform 140ms ease-out, box-shadow 140ms ease-out, border-color 140ms ease-out;
 }
-
 .sc-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(140,190,255,0.22);
-  box-shadow: 0 24px 64px rgba(0,0,0,0.44);
+  border-color: rgba(82,224,208,0.30);
+  box-shadow:
+    0 24px 64px rgba(0,0,0,0.44),
+    inset 0 1px 0 rgba(255,255,255,0.06);
 }
+.sc-card.disabled {
+  opacity: .62;
+  cursor: default;
+}
+.sc-card.disabled:hover { transform:none; }
 
-/* left block */
 .left {
   display:flex;
   align-items:center;
@@ -168,7 +209,6 @@ html, body {
   min-width: 0;
 }
 
-/* icon */
 .icon {
   width: 44px;
   height: 44px;
@@ -177,13 +217,12 @@ html, body {
   align-items:center;
   justify-content:center;
   background: rgba(0,0,0,0.22);
-  border: 1px solid rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.12);
   font-size: 20px;
-  color: rgba(233,238,247,0.92);
+  color: rgba(233,238,247,0.90);
   flex: 0 0 auto;
 }
 
-/* text block */
 .textblock {
   display:flex;
   flex-direction:column;
@@ -195,58 +234,49 @@ html, body {
 
 .title {
   font-size: 20px;
-  font-weight: 650;
-  color: rgba(233,238,247,0.94);
+  font-weight: 720;
+  color: rgba(233,238,247,0.93);
   line-height: 1.15;
 }
-
 .sub {
-  margin-top: 3px;
+  margin-top: 4px;
   font-size: 12px;
-  opacity: .72;
+  opacity: .70;
 }
 
-/* right side: badge + arrow */
-.right{
+.right {
   display:flex;
   align-items:center;
   gap: 12px;
   flex: 0 0 auto;
 }
 
-/* status badge */
 .badge {
-  display:flex;
+  display:inline-flex;
   align-items:center;
-  gap:6px;
-  padding: 4px 10px;
+  gap: 8px;
+  padding: 7px 10px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(34, 197, 94, 0.10);
-  color: rgba(180, 230, 205, 0.88);
+  font-weight: 750;
+  letter-spacing: .08em;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.18);
+  color: rgba(233,238,247,0.78);
 }
+.badge.prod { border-color: rgba(34,197,94,0.28); background: rgba(34,197,94,0.10); }
+.badge.soon { border-color: rgba(245,158,11,0.28); background: rgba(245,158,11,0.10); }
 
-.badge i {
-  font-size: 12px;
-  opacity: 0.85;
-}
-
-/* arrow right */
 .arrow {
   font-size: 26px;
   opacity: .55;
   line-height: 1;
+  width: 28px;
   display:flex;
   align-items:center;
   justify-content:center;
-  width: 26px;
 }
 
-/* footer */
 .footer {
   height: 64px;
   display:flex;
@@ -256,13 +286,24 @@ html, body {
   opacity: .70;
 }
 
-/* links sin underline */
 a, a:hover, a:visited { color: inherit; text-decoration: none; }
 
 @media (max-width: 980px) {
   .ticker { width: 100%; }
-  .cards { width: min(940px, 94vw); }
+}
+
+@media (max-width: 760px) {
+  html, body { overflow: auto; }
+  .frame { padding: 14px 14px; }
+  .topbar{ height: auto; align-items:flex-start; gap: 10px; }
+  .brand { min-width: 0; }
+  .ticker { display:none; }
+  .markets-pill{ display:inline-flex; }
+  .content { height: auto; padding: 18px 0 8px 0; align-items:flex-start; }
+  .cards { width: min(980px, 96vw); gap: 12px; }
+  .sc-card { padding: 14px 16px; border-radius: 16px; }
   .title { font-size: 19px; }
+  .sub { font-size: 12px; }
 }
 """
 
@@ -287,7 +328,7 @@ app.index_string = f"""
 """
 
 # ======================
-# TradingView ticker (real prices)
+# TradingView ticker
 # ======================
 TV_TICKER = html.Iframe(
     srcDoc="""
@@ -311,45 +352,48 @@ TV_TICKER = html.Iframe(
     className="ticker",
 )
 
+MARKETS_PILL = dcc.Link(
+    href="https://www.tradingview.com/markets/indices/",
+    target="_blank",
+    children=html.Div([html.I(className="bi bi-graph-up"), html.Span(" Markets")], className="markets-pill"),
+)
 
-def card(title, subtitle, icon, url, status="PROD"):
-    return dcc.Link(
-        href=url,
-        target="_blank",  # <-- abre en ventana nueva (como querés)
-        className="sc-link",
-        children=html.Div(
-            className="sc-card",
-            children=[
-                html.Div(
-                    className="left",
-                    children=[
-                        html.Div(html.I(className=f"bi {icon}"), className="icon"),
-                        html.Div(
-                            className="textblock",
-                            children=[
-                                html.Div(title, className="title"),
-                                html.Div(subtitle, className="sub"),
-                            ],
-                        ),
-                    ],
-                ),
-                html.Div(
-                    className="right",
-                    children=[
-                        html.Div(
-                            className="badge",
-                            children=[
-                                html.I(className="bi bi-lock-fill"),
-                                html.Span(status),
-                            ],
-                        ),
-                        html.Div("›", className="arrow"),
-                    ],
-                ),
-            ],
-        ),
+def badge(label: str, kind: str = "prod"):
+    icon = {"prod": "bi-lock-fill", "soon": "bi-hourglass-split"}.get(kind, "bi-dot")
+    return html.Div([html.I(className=f"bi {icon}"), html.Span(label)], className=f"badge {kind}")
+
+def card(title, subtitle, icon, url=None, status="PROD", status_kind="prod", enabled=True):
+    right = html.Div(
+        className="right",
+        children=[
+            badge(status, status_kind),
+            html.Div("›", className="arrow"),
+        ],
     )
 
+    body = html.Div(
+        className=("sc-card" + ("" if enabled else " disabled")),
+        children=[
+            html.Div(
+                className="left",
+                children=[
+                    html.Div(html.I(className=f"bi {icon}"), className="icon"),
+                    html.Div(
+                        className="textblock",
+                        children=[
+                            html.Div(title, className="title"),
+                            html.Div(subtitle, className="sub"),
+                        ],
+                    ),
+                ],
+            ),
+            right,
+        ],
+    )
+
+    if enabled and url:
+        return dcc.Link(href=url, target="_blank", children=body)
+    return body
 
 # ======================
 # LAYOUT
@@ -360,10 +404,18 @@ app.layout = html.Div(
         html.Div(
             className="topbar",
             children=[
-                html.Div(["SCITECH", html.Small("INVESTMENTS")], className="logo"),
+                html.Div(
+                    className="brand",
+                    children=[
+                        html.Div(["SCITECH", html.Small("INVESTMENTS")], className="logo"),
+                        html.Div("DIRECTORY", className="envpill"),
+                    ],
+                ),
                 TV_TICKER,
+                MARKETS_PILL,
             ],
         ),
+
         html.Div(
             className="content",
             children=html.Div(
@@ -371,40 +423,49 @@ app.layout = html.Div(
                 children=[
                     card(
                         "SigmaLab",
-                        "Correlation • regimes • clustering",
+                        "Correlation · regimes · clustering",
                         "bi-grid-3x3-gap",
                         TARGETS["SigmaLab"],
                         status="PROD",
+                        status_kind="prod",
+                        enabled=True,
                     ),
                     card(
                         "GroWise Dashboard",
-                        "Performance • benchmarks • attribution",
+                        "Performance · benchmarks · attribution",
                         "bi-graph-up-arrow",
                         TARGETS["GroWise"],
                         status="PROD",
+                        status_kind="prod",
+                        enabled=True,
                     ),
                     card(
                         "SciTech Atlas",
-                        "Market + quant context • curated research",
+                        "Market + quant context · curated research",
                         "bi-globe2",
                         TARGETS["Atlas"],
-                        status="PROD",
+                        status=("PROD" if ATLAS_ENABLED else "COMING SOON"),
+                        status_kind=("prod" if ATLAS_ENABLED else "soon"),
+                        enabled=ATLAS_ENABLED,  # auto
                     ),
                     card(
                         "Client360",
-                        "Client coverage • activity • reporting",
-                        "bi-person-badge",
+                        "Client coverage · activity · reporting",
+                        "bi-person-vcard",
                         TARGETS["Client360"],
                         status="PROD",
+                        status_kind="prod",
+                        enabled=True,
                     ),
                 ],
             ),
         ),
+
         html.Div(
             className="footer",
             children=[
                 html.Div("SciTech Lab"),
-                html.Div("Docs / Runbooks   •   Changelog   •   System Status"),
+                html.Div("Docs / Runbooks · Changelog · System Status"),
             ],
         ),
     ],
@@ -412,4 +473,3 @@ app.layout = html.Div(
 
 if __name__ == "__main__":
     app.run(debug=True)
-
