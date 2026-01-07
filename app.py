@@ -41,8 +41,8 @@ app.title = "SciTech Lab"
 # ======================
 TARGETS = {
     "SigmaLab": "https://sigma.sci-techlab.com",
-    "GroWise": "https://growise.sci-techlab.com",
-    "Atlas": "https://atlas.sci-techlab.com",
+    "GroWise":  "https://growise.sci-techlab.com",
+    "Atlas":    "https://atlas.sci-techlab.com",
     "Client360": "https://script.google.com/a/macros/sci.tech/s/AKfycby_6WGTvIZ7MNqJOLF32s-uucxGdwRQj7zmP-FPahZ7gsZYZLQxQPWpIBuWvd_htFOs/exec",
 }
 
@@ -267,6 +267,12 @@ html, body {
 .badge.prod { border-color: rgba(34,197,94,0.28); background: rgba(34,197,94,0.10); }
 .badge.soon { border-color: rgba(245,158,11,0.28); background: rgba(245,158,11,0.10); }
 
+.badge.beta {
+  border-color: rgba(59, 130, 246, 0.28);
+  background: rgba(59, 130, 246, 0.10);
+  color: rgba(191, 219, 254, 0.95);
+}
+
 .arrow {
   font-size: 26px;
   opacity: .55;
@@ -407,9 +413,7 @@ app.layout = html.Div(
                 html.Div(
                     className="brand",
                     children=[
-                        html.Div(["SCITECH", html.Small("INVESTMENTS")], className="logo"),
-                        html.Div("DIRECTORY", className="envpill"),
-                    ],
+                        html.Div(["SCITECH", html.Small("INVESTMENTS")], className="logo"),                    ],
                 ),
                 TV_TICKER,
                 MARKETS_PILL,
