@@ -19,6 +19,7 @@ VALID_USERS = {
     "leonel.lalia@sci.tech": "Sc1T3ch_LL_2025!",
     "maximiliano.markous@sci.tech": "Sc1T3ch_MM_2025!",
     "pamela.ghisla@sci.tech": "Sc1T3ch_PG_2025!",
+    "bhavya.gehlot@sci.tech": "Sc1T3ch_BG_2025!",
 }
 
 external_stylesheets = [
@@ -477,3 +478,4 @@ app.layout = html.Div(
 
 if __name__ == "__main__":
     app.run(debug=True)
+
