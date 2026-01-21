@@ -314,10 +314,7 @@ function GreetingBanner() {
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-medium text-amber-200/90">{greeting}</span>
-          </div>
+          <span className="text-sm font-medium text-amber-200/90 mb-2 block">{greeting}</span>
           <p className="text-sm text-slate-300/80 italic leading-relaxed">
             "{quote.text}"
           </p>
