@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Grid3X3, 
   TrendingUp, 
@@ -8,7 +8,10 @@ import {
   ArrowUpRight,
   Shield,
   Clock,
-  Activity
+  Activity,
+  Sparkles,
+  Zap,
+  BarChart3
 } from "lucide-react";
 import bgImage from "@assets/generated_images/glowing_network_constellation_dark.png";
 
@@ -123,7 +126,7 @@ function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
       className={`
         group relative overflow-hidden
         flex items-center justify-between 
-        p-5 sm:p-6 rounded-xl
+        p-3.5 sm:p-4 rounded-xl
         border border-amber-200/10
         bg-gradient-to-br from-slate-800/80 to-slate-900/60
         backdrop-blur-2xl shadow-lg
@@ -140,20 +143,20 @@ function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
 
       <div className="relative flex items-center gap-5 min-w-0">
         <div
-          className="w-12 h-12 rounded-lg flex items-center justify-center bg-amber-400/5 border border-amber-400/10 group-hover:border-amber-400/30 group-hover:bg-amber-400/10 transition-all duration-300"
+          className="w-10 h-10 rounded-lg flex items-center justify-center bg-amber-400/5 border border-amber-400/10 group-hover:border-amber-400/30 group-hover:bg-amber-400/10 transition-all duration-300"
           data-testid={`icon-${app.id}`}
         >
-          <Icon className="w-5 h-5 text-amber-200/80 group-hover:text-amber-200 transition-colors duration-300" strokeWidth={1.5} />
+          <Icon className="w-4 h-4 text-amber-200/80 group-hover:text-amber-200 transition-colors duration-300" strokeWidth={1.5} />
         </div>
         <div className="flex flex-col min-w-0">
           <span
-            className="text-lg sm:text-xl font-semibold text-amber-50 tracking-tight leading-tight"
+            className="text-base sm:text-lg font-semibold text-amber-50 tracking-tight leading-tight"
             data-testid={`text-title-${app.id}`}
           >
             {app.title}
           </span>
           <span
-            className="mt-1.5 text-[13px] text-slate-300/80 font-light tracking-wide"
+            className="mt-1 text-[12px] text-slate-300/80 font-light tracking-wide"
             data-testid={`text-subtitle-${app.id}`}
           >
             {app.subtitle}
@@ -163,8 +166,8 @@ function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
 
       <div className="relative flex items-center gap-4 flex-shrink-0">
         <StatusIndicator status={app.status} />
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-400/5 border border-amber-400/10 group-hover:border-amber-400/30 group-hover:bg-amber-400/15 transition-all duration-300">
-          <ArrowUpRight className="w-4 h-4 text-amber-200/50 group-hover:text-amber-200 transition-colors duration-300" strokeWidth={2} />
+        <div className="w-7 h-7 rounded-md flex items-center justify-center bg-amber-400/5 border border-amber-400/10 group-hover:border-amber-400/30 group-hover:bg-amber-400/15 transition-all duration-300">
+          <ArrowUpRight className="w-3.5 h-3.5 text-amber-200/50 group-hover:text-amber-200 transition-colors duration-300" strokeWidth={2} />
         </div>
       </div>
     </motion.div>
@@ -273,6 +276,103 @@ function LiveIndicator() {
   );
 }
 
+function GreetingBanner() {
+  const [greeting, setGreeting] = useState("");
+  const [quote, setQuote] = useState({ text: "", author: "" });
+
+  const quotes = [
+    { text: "In investing, what is comfortable is rarely profitable.", author: "Robert Arnott" },
+    { text: "The stock market is filled with individuals who know the price of everything, but the value of nothing.", author: "Philip Fisher" },
+    { text: "Risk comes from not knowing what you're doing.", author: "Warren Buffett" },
+    { text: "Markets can remain irrational longer than you can remain solvent.", author: "John Maynard Keynes" },
+    { text: "The four most dangerous words in investing are: 'This time it's different.'", author: "Sir John Templeton" },
+  ];
+
+  useEffect(() => {
+    const hour = new Date().toLocaleString("en-US", { 
+      timeZone: "America/New_York", 
+      hour: "numeric", 
+      hour12: false 
+    });
+    const h = parseInt(hour);
+    
+    if (h >= 5 && h < 12) setGreeting("Good morning");
+    else if (h >= 12 && h < 17) setGreeting("Good afternoon");
+    else if (h >= 17 && h < 21) setGreeting("Good evening");
+    else setGreeting("Good night");
+
+    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="mb-8 p-4 rounded-xl border border-amber-400/10 bg-gradient-to-r from-amber-400/5 via-transparent to-blue-400/5"
+      data-testid="greeting-banner"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span className="text-sm font-medium text-amber-200/90">{greeting}</span>
+          </div>
+          <p className="text-sm text-slate-300/80 italic leading-relaxed">
+            "{quote.text}"
+          </p>
+          <p className="mt-1 text-xs text-slate-400/60">
+            — {quote.author}
+          </p>
+        </div>
+        <QuickStats />
+      </div>
+    </motion.div>
+  );
+}
+
+function QuickStats() {
+  const [stats, setStats] = useState({ spx: 0, vix: 0, trend: "up" as "up" | "down" });
+
+  useEffect(() => {
+    // Simulated real-time feeling with random updates
+    const updateStats = () => {
+      setStats({
+        spx: 5890 + Math.random() * 20 - 10,
+        vix: 13 + Math.random() * 2 - 1,
+        trend: Math.random() > 0.5 ? "up" : "down"
+      });
+    };
+    updateStats();
+    const interval = setInterval(updateStats, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="hidden sm:flex items-center gap-4 px-4 py-2 rounded-lg border border-slate-700/50 bg-slate-800/30">
+      <div className="flex items-center gap-2">
+        <BarChart3 className="w-3.5 h-3.5 text-slate-400" />
+        <div className="flex flex-col">
+          <span className="text-[9px] text-slate-500 uppercase tracking-wide">S&P 500</span>
+          <span className={`text-sm font-mono ${stats.trend === "up" ? "text-emerald-400" : "text-red-400"}`}>
+            {stats.spx.toFixed(1)}
+          </span>
+        </div>
+      </div>
+      <div className="w-px h-6 bg-slate-700/50" />
+      <div className="flex items-center gap-2">
+        <Zap className="w-3.5 h-3.5 text-slate-400" />
+        <div className="flex flex-col">
+          <span className="text-[9px] text-slate-500 uppercase tracking-wide">VIX</span>
+          <span className="text-sm font-mono text-amber-300">
+            {stats.vix.toFixed(2)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <div
@@ -336,11 +436,13 @@ export default function Home() {
 
         {/* Content */}
         <main className="flex-1 flex flex-col justify-center py-12 sm:py-16">
+          <GreetingBanner />
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="mb-10"
+            className="mb-6"
           >
             <h1 className="text-[11px] sm:text-xs tracking-[0.25em] text-amber-200/70 font-medium uppercase mb-2">
               Application Suite
@@ -348,7 +450,7 @@ export default function Home() {
             <div className="w-16 h-px bg-gradient-to-r from-amber-400/60 to-transparent" />
           </motion.div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {APPS.map((app, index) => (
               <AppCardComponent key={app.id} app={app} index={index} />
             ))}
