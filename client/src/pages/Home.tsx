@@ -239,7 +239,7 @@ export default function Home() {
     <div
       className="relative min-h-screen w-full overflow-x-hidden"
       style={{
-        background: `linear-gradient(180deg, rgba(7,10,16,0.85) 0%, rgba(7,10,16,0.75) 100%), url(${bgImage})`,
+        background: `linear-gradient(180deg, rgba(3,6,12,0.65) 0%, rgba(3,6,12,0.55) 100%), url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -257,7 +257,7 @@ export default function Home() {
       <div 
         className="fixed inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.25) 100%)",
+          background: "radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.15) 100%)",
         }}
       />
 
