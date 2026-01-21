@@ -1,14 +1,13 @@
-import { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import { 
   Grid3X3, 
   TrendingUp, 
   Globe2, 
   UserSquare2,
-  ChevronRight,
-  Lock,
+  ArrowUpRight,
+  Shield,
   Clock,
-  Zap
+  Activity
 } from "lucide-react";
 import bgImage from "@assets/bg_scitech_map.png";
 
@@ -18,109 +17,142 @@ interface AppCard {
   subtitle: string;
   icon: typeof Grid3X3;
   url: string;
-  status: "PROD" | "BETA" | "COMING SOON";
+  status: "LIVE" | "BETA" | "SOON";
   enabled: boolean;
+  accentColor: string;
 }
 
 const APPS: AppCard[] = [
   {
     id: "sigmalab",
     title: "SigmaLab",
-    subtitle: "Correlation · regimes · clustering",
+    subtitle: "Correlation matrices · Regime detection · Asset clustering",
     icon: Grid3X3,
     url: "https://sigma.sci-techlab.com",
-    status: "PROD",
+    status: "LIVE",
     enabled: true,
+    accentColor: "from-emerald-500/20 to-emerald-500/5",
   },
   {
     id: "growise",
-    title: "GroWise Dashboard",
-    subtitle: "Performance · benchmarks · attribution",
+    title: "GroWise",
+    subtitle: "Portfolio performance · Benchmark analysis · Factor attribution",
     icon: TrendingUp,
     url: "https://growise.sci-techlab.com",
-    status: "PROD",
+    status: "LIVE",
     enabled: true,
+    accentColor: "from-blue-500/20 to-blue-500/5",
   },
   {
     id: "atlas",
-    title: "SciTech Atlas",
-    subtitle: "Market + quant context · curated research",
+    title: "Atlas",
+    subtitle: "Market intelligence · Quantitative research · Macro context",
     icon: Globe2,
     url: "https://atlas.sci-techlab.com",
-    status: "COMING SOON",
+    status: "SOON",
     enabled: false,
+    accentColor: "from-amber-500/20 to-amber-500/5",
   },
   {
     id: "client360",
     title: "Client360",
-    subtitle: "Client coverage · activity · reporting",
+    subtitle: "Coverage management · Activity tracking · Reporting suite",
     icon: UserSquare2,
     url: "https://script.google.com/a/macros/sci.tech/s/AKfycby_6WGTvIZ7MNqJOLF32s-uucxGdwRQj7zmP-FPahZ7gsZYZLQxQPWpIBuWvd_htFOs/exec",
-    status: "PROD",
+    status: "LIVE",
     enabled: true,
+    accentColor: "from-violet-500/20 to-violet-500/5",
   },
 ];
 
-function StatusBadge({ status }: { status: AppCard["status"] }) {
+function StatusIndicator({ status }: { status: AppCard["status"] }) {
   const config = {
-    PROD: {
-      icon: Lock,
-      className: "border-green-500/30 bg-green-500/10 text-green-300/90",
+    LIVE: {
+      icon: Shield,
+      label: "LIVE",
+      dotColor: "bg-emerald-400",
+      textColor: "text-emerald-400/90",
+      borderColor: "border-emerald-500/20",
     },
     BETA: {
-      icon: Zap,
-      className: "border-blue-500/30 bg-blue-500/10 text-blue-300/90",
+      icon: Activity,
+      label: "BETA",
+      dotColor: "bg-blue-400",
+      textColor: "text-blue-400/90",
+      borderColor: "border-blue-500/20",
     },
-    "COMING SOON": {
+    SOON: {
       icon: Clock,
-      className: "border-amber-500/30 bg-amber-500/10 text-amber-300/90",
+      label: "SOON",
+      dotColor: "bg-amber-400/60",
+      textColor: "text-amber-400/70",
+      borderColor: "border-amber-500/15",
     },
   };
 
-  const { icon: Icon, className } = config[status];
+  const { label, dotColor, textColor, borderColor } = config[status];
 
   return (
     <div
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold tracking-wide border ${className}`}
-      data-testid={`badge-status-${status.toLowerCase().replace(" ", "-")}`}
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-[10px] font-semibold tracking-[0.15em] uppercase border ${borderColor} bg-white/[0.02] backdrop-blur-sm ${textColor}`}
+      data-testid={`indicator-status-${status.toLowerCase()}`}
     >
-      <Icon className="w-3 h-3" />
-      <span>{status}</span>
+      <span className={`w-1.5 h-1.5 rounded-full ${dotColor} ${status === 'LIVE' ? 'animate-pulse' : ''}`} />
+      <span>{label}</span>
     </div>
   );
 }
 
-function AppCardComponent({ app }: { app: AppCard }) {
+function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
   const Icon = app.icon;
 
   const cardContent = (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ 
+        duration: 0.5, 
+        delay: index * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }}
+      whileHover={app.enabled ? { 
+        y: -4,
+        transition: { duration: 0.2 }
+      } : {}}
       className={`
-        flex items-center justify-between p-4 sm:p-5 rounded-2xl
-        border border-white/10
-        bg-gradient-to-b from-[rgba(17,27,45,0.72)] to-[rgba(17,27,45,0.34)]
-        shadow-xl backdrop-blur-xl
-        transition-all duration-150 ease-out
-        ${app.enabled ? "cursor-pointer hover:translate-y-[-2px] hover:border-primary/30 hover:shadow-2xl" : "opacity-60 cursor-default"}
+        group relative overflow-hidden
+        flex items-center justify-between 
+        p-5 sm:p-6 rounded-xl
+        border border-white/[0.06]
+        bg-gradient-to-br from-white/[0.04] to-white/[0.01]
+        backdrop-blur-2xl
+        ${app.enabled ? "cursor-pointer" : "opacity-50 cursor-default"}
+        transition-all duration-300 ease-out
       `}
       data-testid={`card-app-${app.id}`}
     >
-      <div className="flex items-center gap-4 min-w-0">
+      {/* Subtle accent gradient on hover */}
+      <div className={`absolute inset-0 bg-gradient-to-r ${app.accentColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+      
+      {/* Top border glow on hover */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+      <div className="relative flex items-center gap-5 min-w-0">
         <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center bg-black/20 border border-white/10 flex-shrink-0"
+          className="w-12 h-12 rounded-lg flex items-center justify-center bg-white/[0.03] border border-white/[0.06] group-hover:border-white/[0.12] group-hover:bg-white/[0.06] transition-all duration-300"
           data-testid={`icon-${app.id}`}
         >
-          <Icon className="w-5 h-5 text-foreground/90" />
+          <Icon className="w-5 h-5 text-white/70 group-hover:text-white/90 transition-colors duration-300" strokeWidth={1.5} />
         </div>
         <div className="flex flex-col min-w-0">
           <span
-            className="text-lg sm:text-xl font-bold text-foreground/95 leading-tight"
+            className="text-lg sm:text-xl font-semibold text-white/95 tracking-tight leading-tight"
             data-testid={`text-title-${app.id}`}
           >
             {app.title}
           </span>
           <span
-            className="mt-1 text-xs text-foreground/60 truncate"
+            className="mt-1.5 text-[13px] text-white/40 font-light tracking-wide"
             data-testid={`text-subtitle-${app.id}`}
           >
             {app.subtitle}
@@ -128,11 +160,13 @@ function AppCardComponent({ app }: { app: AppCard }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 flex-shrink-0">
-        <StatusBadge status={app.status} />
-        <ChevronRight className="w-6 h-6 text-foreground/50" />
+      <div className="relative flex items-center gap-4 flex-shrink-0">
+        <StatusIndicator status={app.status} />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/[0.03] border border-white/[0.06] group-hover:border-white/[0.15] group-hover:bg-white/[0.08] transition-all duration-300">
+          <ArrowUpRight className="w-4 h-4 text-white/40 group-hover:text-white/80 transition-colors duration-300" strokeWidth={2} />
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   if (app.enabled && app.url) {
@@ -154,8 +188,11 @@ function AppCardComponent({ app }: { app: AppCard }) {
 
 function TradingViewTicker() {
   return (
-    <div
-      className="hidden lg:block w-[900px] h-14 rounded-xl overflow-hidden border border-white/10 bg-black/20 shadow-lg"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8, delay: 0.3 }}
+      className="hidden lg:block w-[700px] h-12 rounded-lg overflow-hidden border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl"
       data-testid="widget-ticker"
     >
       <iframe
@@ -166,14 +203,15 @@ function TradingViewTicker() {
             <script src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js">
             {
               "symbols": [
-                {"proName": "SP:SPX", "title": "SPX"},
-                {"proName": "NASDAQ:NDX", "title": "NDX"},
+                {"proName": "SP:SPX", "title": "S&P 500"},
+                {"proName": "NASDAQ:NDX", "title": "NASDAQ"},
                 {"proName": "TVC:DXY", "title": "DXY"},
-                {"proName": "CBOE:VIX", "title": "VIX"}
+                {"proName": "CBOE:VIX", "title": "VIX"},
+                {"proName": "TVC:US10Y", "title": "10Y"}
               ],
               "colorTheme": "dark",
               "isTransparent": true,
-              "displayMode": "adaptive",
+              "displayMode": "compact",
               "locale": "en"
             }
             </script>
@@ -181,24 +219,18 @@ function TradingViewTicker() {
           </html>
         `}
         className="w-full h-full border-0"
-        title="TradingView Ticker"
+        title="Market Ticker"
       />
-    </div>
+    </motion.div>
   );
 }
 
-function MarketsPill() {
+function LiveIndicator() {
   return (
-    <a
-      href="https://www.tradingview.com/markets/indices/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="lg:hidden inline-flex items-center gap-2 px-3 py-2 rounded-full border border-white/10 bg-black/20 text-foreground/80 font-semibold text-xs tracking-wide no-underline"
-      data-testid="link-markets"
-    >
-      <TrendingUp className="w-3.5 h-3.5" />
-      <span>Markets</span>
-    </a>
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/[0.06] bg-white/[0.02]">
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+      <span className="text-[10px] font-medium tracking-[0.1em] text-white/50 uppercase">Live</span>
+    </div>
   );
 }
 
@@ -207,60 +239,109 @@ export default function Home() {
     <div
       className="relative min-h-screen w-full overflow-x-hidden"
       style={{
-        background: `#070A10 url(${bgImage}) no-repeat center center fixed`,
+        background: `linear-gradient(180deg, rgba(3,7,12,0.97) 0%, rgba(3,7,12,0.92) 100%), url(${bgImage})`,
         backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
       }}
     >
-      {/* Overlay gradient */}
-      <div
-        className="absolute inset-0 pointer-events-none"
+      {/* Noise texture overlay */}
+      <div 
+        className="fixed inset-0 pointer-events-none opacity-[0.015]"
         style={{
-          background: `
-            radial-gradient(1200px 700px at 20% 18%, rgba(0,0,0,0.10), transparent 60%),
-            radial-gradient(900px 520px at 80% 25%, rgba(0,0,0,0.08), transparent 55%),
-            linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.42))
-          `,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      <div className="relative z-10 flex flex-col min-h-screen px-4 sm:px-6 py-4 sm:py-5">
+      {/* Subtle vignette */}
+      <div 
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%)",
+        }}
+      />
+
+      {/* Accent glow */}
+      <div 
+        className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] pointer-events-none opacity-30"
+        style={{
+          background: "radial-gradient(ellipse at center top, rgba(16,185,129,0.08) 0%, transparent 70%)",
+        }}
+      />
+
+      <div className="relative z-10 flex flex-col min-h-screen max-w-[1200px] mx-auto px-6 sm:px-8 lg:px-12">
         {/* Header */}
-        <header
-          className="flex flex-wrap items-center justify-between gap-4 h-auto sm:h-16"
+        <motion.header
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex items-center justify-between py-6 sm:py-8 border-b border-white/[0.04]"
           data-testid="header-main"
         >
-          <div className="flex items-end gap-3" data-testid="brand-logo">
+          <div className="flex items-center gap-6" data-testid="brand-logo">
             <div className="flex flex-col">
-              <span className="text-2xl font-extrabold tracking-[0.16em] text-foreground/92 leading-none">
+              <span className="text-xl sm:text-2xl font-semibold tracking-[0.2em] text-white/95 leading-none">
                 SCITECH
               </span>
-              <span className="text-[10px] tracking-[0.34em] text-foreground/65 mt-1">
+              <span className="text-[9px] sm:text-[10px] tracking-[0.4em] text-white/35 mt-1.5 font-light">
                 INVESTMENTS
               </span>
             </div>
+            <div className="hidden sm:block w-px h-8 bg-white/[0.08]" />
+            <span className="hidden sm:block text-[11px] tracking-[0.15em] text-white/30 font-light uppercase">
+              Research Lab
+            </span>
           </div>
 
-          <TradingViewTicker />
-          <MarketsPill />
-        </header>
+          <div className="flex items-center gap-4">
+            <TradingViewTicker />
+            <LiveIndicator />
+          </div>
+        </motion.header>
 
         {/* Content */}
-        <main className="flex-1 flex items-center justify-center py-6 sm:py-0">
-          <div className="w-full max-w-[1040px] space-y-3.5">
-            {APPS.map((app) => (
-              <AppCardComponent key={app.id} app={app} />
+        <main className="flex-1 flex flex-col justify-center py-12 sm:py-16">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mb-10"
+          >
+            <h1 className="text-[11px] sm:text-xs tracking-[0.25em] text-white/30 font-light uppercase mb-2">
+              Application Suite
+            </h1>
+            <div className="w-12 h-px bg-gradient-to-r from-emerald-500/50 to-transparent" />
+          </motion.div>
+
+          <div className="space-y-3">
+            {APPS.map((app, index) => (
+              <AppCardComponent key={app.id} app={app} index={index} />
             ))}
           </div>
         </main>
 
         {/* Footer */}
-        <footer
-          className="flex flex-wrap justify-between items-center h-16 text-xs text-foreground/60 gap-4"
+        <motion.footer
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="flex flex-wrap justify-between items-center py-6 sm:py-8 border-t border-white/[0.04] gap-4"
           data-testid="footer-main"
         >
-          <span>SciTech Lab</span>
-          <span className="text-foreground/50">Docs / Runbooks · Changelog · System Status</span>
-        </footer>
+          <div className="flex items-center gap-6">
+            <span className="text-[11px] tracking-[0.1em] text-white/25 font-light uppercase">
+              SciTech Lab
+            </span>
+            <span className="text-[10px] text-white/15">v2.0</span>
+          </div>
+          <div className="flex items-center gap-6 text-[11px] text-white/20 font-light">
+            <span className="hover:text-white/40 transition-colors cursor-pointer">Documentation</span>
+            <span className="text-white/10">·</span>
+            <span className="hover:text-white/40 transition-colors cursor-pointer">Changelog</span>
+            <span className="text-white/10">·</span>
+            <span className="hover:text-white/40 transition-colors cursor-pointer">Status</span>
+          </div>
+        </motion.footer>
       </div>
     </div>
   );
