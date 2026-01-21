@@ -187,46 +187,23 @@ function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
   return cardContent;
 }
 
-function TradingViewTicker() {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
-      className="hidden lg:block w-[700px] h-12 rounded-lg overflow-hidden border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl"
-      data-testid="widget-ticker"
-    >
-      <iframe
-        srcDoc={`
-          <!DOCTYPE html>
-          <html>
-          <body style="margin:0;background:transparent;">
-            <script src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js">
-            {
-              "symbols": [
-                {"proName": "SP:SPX", "title": "S&P 500"},
-                {"proName": "NASDAQ:NDX", "title": "NASDAQ"},
-                {"proName": "TVC:DXY", "title": "DXY"},
-                {"proName": "CBOE:VIX", "title": "VIX"},
-                {"proName": "TVC:US10Y", "title": "10Y"}
-              ],
-              "colorTheme": "dark",
-              "isTransparent": true,
-              "displayMode": "compact",
-              "locale": "en"
-            }
-            </script>
-          </body>
-          </html>
-        `}
-        className="w-full h-full border-0"
-        title="Market Ticker"
-      />
-    </motion.div>
-  );
+interface MarketClock {
+  city: string;
+  timezone: string;
+  market: string;
+  openHour: number;
+  closeHour: number;
 }
 
-function NYCClock() {
+const MARKETS: MarketClock[] = [
+  { city: "NYC", timezone: "America/New_York", market: "NYSE", openHour: 9.5, closeHour: 16 },
+  { city: "LDN", timezone: "Europe/London", market: "LSE", openHour: 8, closeHour: 16.5 },
+  { city: "TYO", timezone: "Asia/Tokyo", market: "TSE", openHour: 9, closeHour: 15 },
+  { city: "HKG", timezone: "Asia/Hong_Kong", market: "HKEX", openHour: 9.5, closeHour: 16 },
+  { city: "SYD", timezone: "Australia/Sydney", market: "ASX", openHour: 10, closeHour: 16 },
+];
+
+function WorldClocks() {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -234,49 +211,56 @@ function NYCClock() {
     return () => clearInterval(timer);
   }, []);
 
-  const nycTime = time.toLocaleTimeString("en-US", {
-    timeZone: "America/New_York",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  });
-
-  const nycDate = time.toLocaleDateString("en-US", {
-    timeZone: "America/New_York",
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
-
-  const isMarketOpen = () => {
+  const getMarketStatus = (market: MarketClock) => {
     const now = new Date();
-    const nyHour = parseInt(now.toLocaleString("en-US", { timeZone: "America/New_York", hour: "2-digit", hour12: false }));
-    const nyMinute = parseInt(now.toLocaleString("en-US", { timeZone: "America/New_York", minute: "2-digit" }));
-    const day = now.toLocaleString("en-US", { timeZone: "America/New_York", weekday: "short" });
+    const hour = parseInt(now.toLocaleString("en-US", { timeZone: market.timezone, hour: "2-digit", hour12: false }));
+    const minute = parseInt(now.toLocaleString("en-US", { timeZone: market.timezone, minute: "2-digit" }));
+    const day = now.toLocaleString("en-US", { timeZone: market.timezone, weekday: "short" });
     
     if (day === "Sat" || day === "Sun") return false;
-    const totalMins = nyHour * 60 + nyMinute;
-    return totalMins >= 570 && totalMins < 960; // 9:30 AM - 4:00 PM
+    const totalHours = hour + minute / 60;
+    return totalHours >= market.openHour && totalHours < market.closeHour;
+  };
+
+  const formatTime = (timezone: string) => {
+    return time.toLocaleTimeString("en-US", {
+      timeZone: timezone,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
   };
 
   return (
-    <div className="hidden sm:flex items-center gap-4 px-4 py-2 rounded-lg border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
-      <div className="flex flex-col items-end">
-        <span className="text-[10px] text-white/40 tracking-wide uppercase">NYC</span>
-        <span className="text-sm font-mono text-white/90 tracking-wider">{nycTime}</span>
-      </div>
-      <div className="w-px h-8 bg-white/[0.08]" />
-      <div className="flex flex-col items-start">
-        <span className="text-[10px] text-white/40 tracking-wide">{nycDate}</span>
-        <div className="flex items-center gap-1.5">
-          <span className={`w-1.5 h-1.5 rounded-full ${isMarketOpen() ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400/60'}`} />
-          <span className="text-[10px] font-medium tracking-wide text-white/60 uppercase">
-            {isMarketOpen() ? 'Market Open' : 'Market Closed'}
-          </span>
-        </div>
-      </div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8, delay: 0.3 }}
+      className="hidden lg:flex items-center gap-1 px-2 py-2 rounded-xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl"
+      data-testid="widget-world-clocks"
+    >
+      {MARKETS.map((market, idx) => {
+        const isOpen = getMarketStatus(market);
+        return (
+          <div key={market.city} className="flex items-center">
+            <div className="flex flex-col items-center px-4 py-1 min-w-[72px]">
+              <div className="flex items-center gap-1.5 mb-1">
+                <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-emerald-400' : 'bg-white/20'}`} />
+                <span className="text-[10px] font-medium tracking-wider text-white/50 uppercase">
+                  {market.city}
+                </span>
+              </div>
+              <span className="text-base font-mono text-white/90 tracking-wider">
+                {formatTime(market.timezone)}
+              </span>
+            </div>
+            {idx < MARKETS.length - 1 && (
+              <div className="w-px h-8 bg-white/[0.06]" />
+            )}
+          </div>
+        );
+      })}
+    </motion.div>
   );
 }
 
@@ -345,8 +329,7 @@ export default function Home() {
                       </div>
 
           <div className="flex items-center gap-4">
-            <TradingViewTicker />
-            <NYCClock />
+            <WorldClocks />
             <LiveIndicator />
           </div>
         </motion.header>
