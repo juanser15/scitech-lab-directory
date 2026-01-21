@@ -9,7 +9,7 @@ import {
   Clock,
   Activity
 } from "lucide-react";
-import bgImage from "@assets/bg_scitech_map.png";
+import bgImage from "@assets/generated_images/network_data_mesh_background.png";
 
 interface AppCard {
   id: string;
