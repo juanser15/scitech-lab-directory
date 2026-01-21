@@ -9,7 +9,7 @@ import {
   Clock,
   Activity
 } from "lucide-react";
-import bgImage from "@assets/generated_images/network_data_mesh_background.png";
+import bgImage from "@assets/generated_images/glowing_network_constellation_dark.png";
 
 interface AppCard {
   id: string;
@@ -239,7 +239,7 @@ export default function Home() {
     <div
       className="relative min-h-screen w-full overflow-x-hidden"
       style={{
-        background: `linear-gradient(180deg, rgba(3,6,12,0.65) 0%, rgba(3,6,12,0.55) 100%), url(${bgImage})`,
+        background: `linear-gradient(180deg, rgba(3,6,12,0.5) 0%, rgba(3,6,12,0.4) 100%), url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
