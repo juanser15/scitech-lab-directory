@@ -1,0 +1,4 @@
+dash==3.2.0
+dash-bootstrap-components
+dash-auth
+gunicorn
