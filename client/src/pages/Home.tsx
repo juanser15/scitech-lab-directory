@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   Grid3X3, 
@@ -225,9 +226,63 @@ function TradingViewTicker() {
   );
 }
 
+function NYCClock() {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const nycTime = time.toLocaleTimeString("en-US", {
+    timeZone: "America/New_York",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  const nycDate = time.toLocaleDateString("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+
+  const isMarketOpen = () => {
+    const now = new Date();
+    const nyHour = parseInt(now.toLocaleString("en-US", { timeZone: "America/New_York", hour: "2-digit", hour12: false }));
+    const nyMinute = parseInt(now.toLocaleString("en-US", { timeZone: "America/New_York", minute: "2-digit" }));
+    const day = now.toLocaleString("en-US", { timeZone: "America/New_York", weekday: "short" });
+    
+    if (day === "Sat" || day === "Sun") return false;
+    const totalMins = nyHour * 60 + nyMinute;
+    return totalMins >= 570 && totalMins < 960; // 9:30 AM - 4:00 PM
+  };
+
+  return (
+    <div className="hidden sm:flex items-center gap-4 px-4 py-2 rounded-lg border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
+      <div className="flex flex-col items-end">
+        <span className="text-[10px] text-white/40 tracking-wide uppercase">NYC</span>
+        <span className="text-sm font-mono text-white/90 tracking-wider">{nycTime}</span>
+      </div>
+      <div className="w-px h-8 bg-white/[0.08]" />
+      <div className="flex flex-col items-start">
+        <span className="text-[10px] text-white/40 tracking-wide">{nycDate}</span>
+        <div className="flex items-center gap-1.5">
+          <span className={`w-1.5 h-1.5 rounded-full ${isMarketOpen() ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400/60'}`} />
+          <span className="text-[10px] font-medium tracking-wide text-white/60 uppercase">
+            {isMarketOpen() ? 'Market Open' : 'Market Closed'}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LiveIndicator() {
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/[0.06] bg-white/[0.02]">
+    <div className="sm:hidden flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/[0.06] bg-white/[0.02]">
       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
       <span className="text-[10px] font-medium tracking-[0.1em] text-white/50 uppercase">Live</span>
     </div>
@@ -287,14 +342,11 @@ export default function Home() {
                 INVESTMENTS
               </span>
             </div>
-            <div className="hidden sm:block w-px h-8 bg-white/[0.08]" />
-            <span className="hidden sm:block text-[11px] tracking-[0.15em] text-white/50 font-light uppercase">
-              Research Lab
-            </span>
-          </div>
+                      </div>
 
           <div className="flex items-center gap-4">
             <TradingViewTicker />
+            <NYCClock />
             <LiveIndicator />
           </div>
         </motion.header>
