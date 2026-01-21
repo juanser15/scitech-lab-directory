@@ -32,7 +32,7 @@ const APPS: AppCard[] = [
     url: "https://sigma.sci-techlab.com",
     status: "LIVE",
     enabled: true,
-    accentColor: "from-emerald-500/20 to-emerald-500/5",
+    accentColor: "from-amber-400/25 to-amber-400/5",
   },
   {
     id: "growise",
@@ -42,7 +42,7 @@ const APPS: AppCard[] = [
     url: "https://growise.sci-techlab.com",
     status: "LIVE",
     enabled: true,
-    accentColor: "from-blue-500/20 to-blue-500/5",
+    accentColor: "from-amber-400/25 to-amber-400/5",
   },
   {
     id: "atlas",
@@ -52,7 +52,7 @@ const APPS: AppCard[] = [
     url: "https://atlas.sci-techlab.com",
     status: "SOON",
     enabled: false,
-    accentColor: "from-amber-500/20 to-amber-500/5",
+    accentColor: "from-slate-400/20 to-slate-400/5",
   },
   {
     id: "client360",
@@ -62,7 +62,7 @@ const APPS: AppCard[] = [
     url: "https://script.google.com/a/macros/sci.tech/s/AKfycby_6WGTvIZ7MNqJOLF32s-uucxGdwRQj7zmP-FPahZ7gsZYZLQxQPWpIBuWvd_htFOs/exec",
     status: "LIVE",
     enabled: true,
-    accentColor: "from-violet-500/20 to-violet-500/5",
+    accentColor: "from-amber-400/25 to-amber-400/5",
   },
 ];
 
@@ -71,23 +71,23 @@ function StatusIndicator({ status }: { status: AppCard["status"] }) {
     LIVE: {
       icon: Shield,
       label: "LIVE",
-      dotColor: "bg-emerald-400",
-      textColor: "text-emerald-400/90",
-      borderColor: "border-emerald-500/20",
+      dotColor: "bg-amber-400",
+      textColor: "text-amber-300/90",
+      borderColor: "border-amber-400/30",
     },
     BETA: {
       icon: Activity,
       label: "BETA",
       dotColor: "bg-blue-400",
-      textColor: "text-blue-400/90",
-      borderColor: "border-blue-500/20",
+      textColor: "text-blue-300/90",
+      borderColor: "border-blue-400/30",
     },
     SOON: {
       icon: Clock,
       label: "SOON",
-      dotColor: "bg-amber-400/60",
-      textColor: "text-amber-400/70",
-      borderColor: "border-amber-500/15",
+      dotColor: "bg-slate-400/60",
+      textColor: "text-slate-400/70",
+      borderColor: "border-slate-500/20",
     },
   };
 
@@ -124,10 +124,10 @@ function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
         group relative overflow-hidden
         flex items-center justify-between 
         p-5 sm:p-6 rounded-xl
-        border border-white/[0.06]
-        bg-gradient-to-br from-white/[0.04] to-white/[0.01]
-        backdrop-blur-2xl
-        ${app.enabled ? "cursor-pointer" : "opacity-50 cursor-default"}
+        border border-amber-200/10
+        bg-gradient-to-br from-slate-800/80 to-slate-900/60
+        backdrop-blur-2xl shadow-lg
+        ${app.enabled ? "cursor-pointer hover:border-amber-400/30 hover:shadow-amber-900/20 hover:shadow-xl" : "opacity-50 cursor-default"}
         transition-all duration-300 ease-out
       `}
       data-testid={`card-app-${app.id}`}
@@ -136,24 +136,24 @@ function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
       <div className={`absolute inset-0 bg-gradient-to-r ${app.accentColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
       
       {/* Top border glow on hover */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
       <div className="relative flex items-center gap-5 min-w-0">
         <div
-          className="w-12 h-12 rounded-lg flex items-center justify-center bg-white/[0.03] border border-white/[0.06] group-hover:border-white/[0.12] group-hover:bg-white/[0.06] transition-all duration-300"
+          className="w-12 h-12 rounded-lg flex items-center justify-center bg-amber-400/5 border border-amber-400/10 group-hover:border-amber-400/30 group-hover:bg-amber-400/10 transition-all duration-300"
           data-testid={`icon-${app.id}`}
         >
-          <Icon className="w-5 h-5 text-white/80 group-hover:text-white transition-colors duration-300" strokeWidth={1.5} />
+          <Icon className="w-5 h-5 text-amber-200/80 group-hover:text-amber-200 transition-colors duration-300" strokeWidth={1.5} />
         </div>
         <div className="flex flex-col min-w-0">
           <span
-            className="text-lg sm:text-xl font-semibold text-white tracking-tight leading-tight"
+            className="text-lg sm:text-xl font-semibold text-amber-50 tracking-tight leading-tight"
             data-testid={`text-title-${app.id}`}
           >
             {app.title}
           </span>
           <span
-            className="mt-1.5 text-[13px] text-white/60 font-light tracking-wide"
+            className="mt-1.5 text-[13px] text-slate-300/80 font-light tracking-wide"
             data-testid={`text-subtitle-${app.id}`}
           >
             {app.subtitle}
@@ -163,8 +163,8 @@ function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
 
       <div className="relative flex items-center gap-4 flex-shrink-0">
         <StatusIndicator status={app.status} />
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/[0.03] border border-white/[0.06] group-hover:border-white/[0.15] group-hover:bg-white/[0.08] transition-all duration-300">
-          <ArrowUpRight className="w-4 h-4 text-white/40 group-hover:text-white/80 transition-colors duration-300" strokeWidth={2} />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-amber-400/5 border border-amber-400/10 group-hover:border-amber-400/30 group-hover:bg-amber-400/15 transition-all duration-300">
+          <ArrowUpRight className="w-4 h-4 text-amber-200/50 group-hover:text-amber-200 transition-colors duration-300" strokeWidth={2} />
         </div>
       </div>
     </motion.div>
@@ -236,7 +236,7 @@ function WorldClocks() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, delay: 0.3 }}
-      className="hidden lg:flex items-center gap-1 px-2 py-2 rounded-xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl"
+      className="hidden lg:flex items-center gap-1 px-2 py-2 rounded-xl border border-amber-200/10 bg-slate-800/50 backdrop-blur-xl"
       data-testid="widget-world-clocks"
     >
       {MARKETS.map((market, idx) => {
@@ -245,17 +245,17 @@ function WorldClocks() {
           <div key={market.city} className="flex items-center">
             <div className="flex flex-col items-center px-4 py-1 min-w-[72px]">
               <div className="flex items-center gap-1.5 mb-1">
-                <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-emerald-400' : 'bg-white/20'}`} />
-                <span className="text-[10px] font-medium tracking-wider text-white/50 uppercase">
+                <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-amber-400' : 'bg-slate-500/50'}`} />
+                <span className="text-[10px] font-medium tracking-wider text-slate-400 uppercase">
                   {market.city}
                 </span>
               </div>
-              <span className="text-base font-mono text-white/90 tracking-wider">
+              <span className="text-base font-mono text-amber-50/90 tracking-wider">
                 {formatTime(market.timezone)}
               </span>
             </div>
             {idx < MARKETS.length - 1 && (
-              <div className="w-px h-8 bg-white/[0.06]" />
+              <div className="w-px h-8 bg-amber-200/10" />
             )}
           </div>
         );
@@ -266,9 +266,9 @@ function WorldClocks() {
 
 function LiveIndicator() {
   return (
-    <div className="sm:hidden flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/[0.06] bg-white/[0.02]">
-      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-      <span className="text-[10px] font-medium tracking-[0.1em] text-white/50 uppercase">Live</span>
+    <div className="lg:hidden flex items-center gap-2 px-3 py-1.5 rounded-md border border-amber-400/20 bg-slate-800/50">
+      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+      <span className="text-[10px] font-medium tracking-[0.1em] text-amber-200/70 uppercase">Live</span>
     </div>
   );
 }
@@ -278,33 +278,33 @@ export default function Home() {
     <div
       className="relative min-h-screen w-full overflow-x-hidden"
       style={{
-        background: `linear-gradient(180deg, rgba(3,6,12,0.5) 0%, rgba(3,6,12,0.4) 100%), url(${bgImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
+        background: `linear-gradient(135deg, #0c1220 0%, #141e30 50%, #0f172a 100%)`,
       }}
     >
-      {/* Noise texture overlay */}
+      {/* Background image with blend */}
       <div 
-        className="fixed inset-0 pointer-events-none opacity-[0.02]"
+        className="fixed inset-0 pointer-events-none opacity-40"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          mixBlendMode: "screen",
         }}
       />
 
-      {/* Subtle vignette - reduced intensity */}
+      {/* Golden accent glow top */}
       <div 
-        className="fixed inset-0 pointer-events-none"
+        className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.15) 100%)",
+          background: "radial-gradient(ellipse at center top, rgba(251,191,36,0.08) 0%, transparent 60%)",
         }}
       />
 
-      {/* Accent glow */}
+      {/* Blue accent glow bottom */}
       <div 
-        className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] pointer-events-none opacity-30"
+        className="fixed bottom-0 right-0 w-[600px] h-[400px] pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at center top, rgba(16,185,129,0.08) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse at bottom right, rgba(59,130,246,0.06) 0%, transparent 60%)",
         }}
       />
 
@@ -314,15 +314,15 @@ export default function Home() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex items-center justify-between py-6 sm:py-8 border-b border-white/[0.04]"
+          className="flex items-center justify-between py-6 sm:py-8 border-b border-amber-200/10"
           data-testid="header-main"
         >
           <div className="flex items-center gap-6" data-testid="brand-logo">
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-semibold tracking-[0.2em] text-white leading-none">
+              <span className="text-xl sm:text-2xl font-semibold tracking-[0.2em] text-amber-50 leading-none">
                 SCITECH
               </span>
-              <span className="text-[9px] sm:text-[10px] tracking-[0.4em] text-white/60 mt-1.5 font-light">
+              <span className="text-[9px] sm:text-[10px] tracking-[0.4em] text-amber-200/60 mt-1.5 font-medium">
                 INVESTMENTS
               </span>
             </div>
@@ -342,10 +342,10 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="mb-10"
           >
-            <h1 className="text-[11px] sm:text-xs tracking-[0.25em] text-white/50 font-light uppercase mb-2">
+            <h1 className="text-[11px] sm:text-xs tracking-[0.25em] text-amber-200/70 font-medium uppercase mb-2">
               Application Suite
             </h1>
-            <div className="w-12 h-px bg-gradient-to-r from-emerald-500/50 to-transparent" />
+            <div className="w-16 h-px bg-gradient-to-r from-amber-400/60 to-transparent" />
           </motion.div>
 
           <div className="space-y-3">
@@ -360,21 +360,21 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-wrap justify-between items-center py-6 sm:py-8 border-t border-white/[0.04] gap-4"
+          className="flex flex-wrap justify-between items-center py-6 sm:py-8 border-t border-amber-200/10 gap-4"
           data-testid="footer-main"
         >
           <div className="flex items-center gap-6">
-            <span className="text-[11px] tracking-[0.1em] text-white/50 font-light uppercase">
+            <span className="text-[11px] tracking-[0.1em] text-slate-400 font-light uppercase">
               SciTech Lab
             </span>
-            <span className="text-[10px] text-white/35">v2.0</span>
+            <span className="text-[10px] text-amber-200/40">v2.0</span>
           </div>
-          <div className="flex items-center gap-6 text-[11px] text-white/40 font-light">
-            <span className="hover:text-white/70 transition-colors cursor-pointer">Documentation</span>
-            <span className="text-white/20">·</span>
-            <span className="hover:text-white/70 transition-colors cursor-pointer">Changelog</span>
-            <span className="text-white/20">·</span>
-            <span className="hover:text-white/70 transition-colors cursor-pointer">Status</span>
+          <div className="flex items-center gap-6 text-[11px] text-slate-400 font-light">
+            <span className="hover:text-amber-200/80 transition-colors cursor-pointer">Documentation</span>
+            <span className="text-slate-600">·</span>
+            <span className="hover:text-amber-200/80 transition-colors cursor-pointer">Changelog</span>
+            <span className="text-slate-600">·</span>
+            <span className="hover:text-amber-200/80 transition-colors cursor-pointer">Status</span>
           </div>
         </motion.footer>
       </div>
