@@ -142,17 +142,17 @@ function AppCardComponent({ app, index }: { app: AppCard; index: number }) {
           className="w-12 h-12 rounded-lg flex items-center justify-center bg-white/[0.03] border border-white/[0.06] group-hover:border-white/[0.12] group-hover:bg-white/[0.06] transition-all duration-300"
           data-testid={`icon-${app.id}`}
         >
-          <Icon className="w-5 h-5 text-white/70 group-hover:text-white/90 transition-colors duration-300" strokeWidth={1.5} />
+          <Icon className="w-5 h-5 text-white/80 group-hover:text-white transition-colors duration-300" strokeWidth={1.5} />
         </div>
         <div className="flex flex-col min-w-0">
           <span
-            className="text-lg sm:text-xl font-semibold text-white/95 tracking-tight leading-tight"
+            className="text-lg sm:text-xl font-semibold text-white tracking-tight leading-tight"
             data-testid={`text-title-${app.id}`}
           >
             {app.title}
           </span>
           <span
-            className="mt-1.5 text-[13px] text-white/40 font-light tracking-wide"
+            className="mt-1.5 text-[13px] text-white/60 font-light tracking-wide"
             data-testid={`text-subtitle-${app.id}`}
           >
             {app.subtitle}
@@ -239,7 +239,7 @@ export default function Home() {
     <div
       className="relative min-h-screen w-full overflow-x-hidden"
       style={{
-        background: `linear-gradient(180deg, rgba(3,7,12,0.97) 0%, rgba(3,7,12,0.92) 100%), url(${bgImage})`,
+        background: `linear-gradient(180deg, rgba(7,10,16,0.85) 0%, rgba(7,10,16,0.75) 100%), url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -247,17 +247,17 @@ export default function Home() {
     >
       {/* Noise texture overlay */}
       <div 
-        className="fixed inset-0 pointer-events-none opacity-[0.015]"
+        className="fixed inset-0 pointer-events-none opacity-[0.02]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
         }}
       />
 
-      {/* Subtle vignette */}
+      {/* Subtle vignette - reduced intensity */}
       <div 
         className="fixed inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%)",
+          background: "radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.25) 100%)",
         }}
       />
 
@@ -280,15 +280,15 @@ export default function Home() {
         >
           <div className="flex items-center gap-6" data-testid="brand-logo">
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-semibold tracking-[0.2em] text-white/95 leading-none">
+              <span className="text-xl sm:text-2xl font-semibold tracking-[0.2em] text-white leading-none">
                 SCITECH
               </span>
-              <span className="text-[9px] sm:text-[10px] tracking-[0.4em] text-white/35 mt-1.5 font-light">
+              <span className="text-[9px] sm:text-[10px] tracking-[0.4em] text-white/60 mt-1.5 font-light">
                 INVESTMENTS
               </span>
             </div>
             <div className="hidden sm:block w-px h-8 bg-white/[0.08]" />
-            <span className="hidden sm:block text-[11px] tracking-[0.15em] text-white/30 font-light uppercase">
+            <span className="hidden sm:block text-[11px] tracking-[0.15em] text-white/50 font-light uppercase">
               Research Lab
             </span>
           </div>
@@ -307,7 +307,7 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="mb-10"
           >
-            <h1 className="text-[11px] sm:text-xs tracking-[0.25em] text-white/30 font-light uppercase mb-2">
+            <h1 className="text-[11px] sm:text-xs tracking-[0.25em] text-white/50 font-light uppercase mb-2">
               Application Suite
             </h1>
             <div className="w-12 h-px bg-gradient-to-r from-emerald-500/50 to-transparent" />
@@ -329,17 +329,17 @@ export default function Home() {
           data-testid="footer-main"
         >
           <div className="flex items-center gap-6">
-            <span className="text-[11px] tracking-[0.1em] text-white/25 font-light uppercase">
+            <span className="text-[11px] tracking-[0.1em] text-white/50 font-light uppercase">
               SciTech Lab
             </span>
-            <span className="text-[10px] text-white/15">v2.0</span>
+            <span className="text-[10px] text-white/35">v2.0</span>
           </div>
-          <div className="flex items-center gap-6 text-[11px] text-white/20 font-light">
-            <span className="hover:text-white/40 transition-colors cursor-pointer">Documentation</span>
-            <span className="text-white/10">·</span>
-            <span className="hover:text-white/40 transition-colors cursor-pointer">Changelog</span>
-            <span className="text-white/10">·</span>
-            <span className="hover:text-white/40 transition-colors cursor-pointer">Status</span>
+          <div className="flex items-center gap-6 text-[11px] text-white/40 font-light">
+            <span className="hover:text-white/70 transition-colors cursor-pointer">Documentation</span>
+            <span className="text-white/20">·</span>
+            <span className="hover:text-white/70 transition-colors cursor-pointer">Changelog</span>
+            <span className="text-white/20">·</span>
+            <span className="hover:text-white/70 transition-colors cursor-pointer">Status</span>
           </div>
         </motion.footer>
       </div>
