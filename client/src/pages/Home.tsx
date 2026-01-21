@@ -281,11 +281,16 @@ function GreetingBanner() {
   const [quote, setQuote] = useState({ text: "", author: "" });
 
   const quotes = [
-    { text: "In investing, what is comfortable is rarely profitable.", author: "Robert Arnott" },
-    { text: "The stock market is filled with individuals who know the price of everything, but the value of nothing.", author: "Philip Fisher" },
-    { text: "Risk comes from not knowing what you're doing.", author: "Warren Buffett" },
-    { text: "Markets can remain irrational longer than you can remain solvent.", author: "John Maynard Keynes" },
-    { text: "The four most dangerous words in investing are: 'This time it's different.'", author: "Sir John Templeton" },
+    { text: "The only way to win is to work and work and work and hope to have a few insights.", author: "Jim Simons" },
+    { text: "In a world where luck plays a large role, focus on the process rather than the outcome.", author: "Ed Thorp" },
+    { text: "The essence of mathematics is not to make simple things complicated, but to make complicated things simple.", author: "Stan Gudder" },
+    { text: "Beware of geeks bearing formulas.", author: "Warren Buffett (on quants)" },
+    { text: "Markets look a lot less efficient from the banks of the Hudson than from the banks of the Charles.", author: "Fischer Black" },
+    { text: "The normal distribution is a theoretical fiction.", author: "Benoît Mandelbrot" },
+    { text: "If you torture the data long enough, it will confess to anything.", author: "Ronald Coase" },
+    { text: "In theory, theory and practice are the same. In practice, they are not.", author: "Albert Einstein" },
+    { text: "Nature uses only the longest threads to weave her patterns.", author: "Richard Feynman" },
+    { text: "The stock market is a device for transferring money from the impatient to the patient.", author: "Emanuel Derman" },
   ];
 
   useEffect(() => {
