@@ -1,6 +1,5 @@
 import dash
 from dash import html, dcc
-import dash_auth
 import dash_bootstrap_components as dbc
 import urllib.request
 import socket
@@ -8,19 +7,7 @@ import socket
 # ======================
 # AUTH
 # ======================
-VALID_USERS = {
-    "john": "growise2025",
-    "analyst": "scitech123",
-    "demo": "demo2025",
-    "juan.serur@sci.tech": "Sc1T3ch_JS_2025!",
-    "martin.garay@sci.tech": "Sc1T3ch_MG_2025!",
-    "federico.massimo@sci.tech": "Sc1T3ch_FM_2025!",
-    "ihs@sci.tech": "Sc1T3ch_IHS_2025!",
-    "leonel.lalia@sci.tech": "Sc1T3ch_LL_2025!",
-    "maximiliano.markous@sci.tech": "Sc1T3ch_MM_2025!",
-    "pamela.ghisla@sci.tech": "Sc1T3ch_PG_2025!",
-    "bhavya.gehlot@sci.tech": "Sc1T3ch_BG_2025!",
-}
+
 
 external_stylesheets = [
     dbc.themes.SLATE,
@@ -34,7 +21,7 @@ app = dash.Dash(
     assets_url_path="/assets",
 )
 server = app.server
-auth = dash_auth.BasicAuth(app, VALID_USERS)
+
 app.title = "SciTech Lab"
 
 # ======================

@@ -13,7 +13,7 @@ import {
   Zap,
   BarChart3
 } from "lucide-react";
-import bgImage from "@assets/generated_images/glowing_network_constellation_dark.png";
+import bgImage from "../assets/generated_images/glowing_network_constellation_dark.png";
 
 interface AppCard {
   id: string;
