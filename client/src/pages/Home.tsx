@@ -334,21 +334,39 @@ function GreetingBanner() {
 }
 
 function QuickStats() {
-  const [stats, setStats] = useState({ spx: 0, vix: 0, trend: "up" as "up" | "down" });
+  const [stats, setStats] = useState({ spx: 0, vix: 0, spxChange: 0, loading: true });
 
   useEffect(() => {
-    // Simulated real-time feeling with random updates
-    const updateStats = () => {
-      setStats({
-        spx: 5890 + Math.random() * 20 - 10,
-        vix: 13 + Math.random() * 2 - 1,
-        trend: Math.random() > 0.5 ? "up" : "down"
-      });
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/market-data");
+        if (response.ok) {
+          const data = await response.json();
+          setStats({
+            spx: data.spx,
+            vix: data.vix,
+            spxChange: data.spxChange,
+            loading: false
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+        setStats(prev => ({ ...prev, loading: false }));
+      }
     };
-    updateStats();
-    const interval = setInterval(updateStats, 5000);
+    
+    fetchData();
+    const interval = setInterval(fetchData, 60000); // Refresh every minute
     return () => clearInterval(interval);
   }, []);
+
+  if (stats.loading) {
+    return (
+      <div className="hidden sm:flex items-center gap-4 px-4 py-2 rounded-lg border border-slate-700/50 bg-slate-800/30">
+        <span className="text-xs text-slate-500">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="hidden sm:flex items-center gap-4 px-4 py-2 rounded-lg border border-slate-700/50 bg-slate-800/30">
@@ -356,9 +374,14 @@ function QuickStats() {
         <BarChart3 className="w-3.5 h-3.5 text-slate-400" />
         <div className="flex flex-col">
           <span className="text-[9px] text-slate-500 uppercase tracking-wide">S&P 500</span>
-          <span className={`text-sm font-mono ${stats.trend === "up" ? "text-emerald-400" : "text-red-400"}`}>
-            {stats.spx.toFixed(1)}
-          </span>
+          <div className="flex items-center gap-1">
+            <span className={`text-sm font-mono ${stats.spxChange >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+              {stats.spx.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+            <span className={`text-[10px] ${stats.spxChange >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+              {stats.spxChange >= 0 ? "+" : ""}{stats.spxChange.toFixed(2)}%
+            </span>
+          </div>
         </div>
       </div>
       <div className="w-px h-6 bg-slate-700/50" />
