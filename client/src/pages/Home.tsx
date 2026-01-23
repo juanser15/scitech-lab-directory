@@ -11,7 +11,10 @@ import {
   Activity,
   Sparkles,
   Zap,
-  BarChart3
+  BarChart3,
+  GraduationCap,
+  BookOpen,
+  ChevronRight
 } from "lucide-react";
 import bgImage from "../assets/generated_images/glowing_network_constellation_dark.png";
 
@@ -451,7 +454,16 @@ export default function Home() {
                 INVESTMENTS
               </span>
             </div>
-                      </div>
+            {/* OPTION 2: University link in header */}
+            <a 
+              href="#university" 
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border border-amber-400/20 bg-amber-400/5 hover:bg-amber-400/10 hover:border-amber-400/40 transition-all duration-300"
+              data-testid="link-university-header"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-amber-300/80" />
+              <span className="text-[10px] tracking-[0.15em] text-amber-200/80 font-medium uppercase">University</span>
+            </a>
+          </div>
 
           <div className="flex items-center gap-4">
             <WorldClocks />
@@ -480,6 +492,44 @@ export default function Home() {
               <AppCardComponent key={app.id} app={app} index={index} />
             ))}
           </div>
+
+          {/* OPTION 3: University section below apps */}
+          <motion.div
+            id="university"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-12 pt-8 border-t border-amber-200/10"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <GraduationCap className="w-5 h-5 text-amber-400/80" />
+              <h2 className="text-[11px] sm:text-xs tracking-[0.25em] text-amber-200/70 font-medium uppercase">
+                SciTech University
+              </h2>
+            </div>
+            
+            <a
+              href="#"
+              className="group block p-5 rounded-xl border border-amber-400/15 bg-gradient-to-br from-amber-400/5 via-slate-800/50 to-blue-400/5 hover:border-amber-400/30 hover:shadow-lg hover:shadow-amber-900/10 transition-all duration-300"
+              data-testid="card-university"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-amber-400/20 to-amber-600/10 border border-amber-400/20">
+                    <BookOpen className="w-5 h-5 text-amber-300" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-amber-50 tracking-tight">Campus</h3>
+                    <p className="text-[12px] text-slate-300/70 mt-0.5">Courses, certifications & learning resources</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-amber-200/50 group-hover:text-amber-200 transition-colors">
+                  <span className="hidden sm:inline text-[11px] tracking-wide uppercase">Explore</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </a>
+          </motion.div>
         </main>
 
         {/* Footer */}
