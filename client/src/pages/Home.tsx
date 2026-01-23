@@ -454,15 +454,6 @@ export default function Home() {
                 INVESTMENTS
               </span>
             </div>
-            {/* OPTION 2: University link in header */}
-            <a 
-              href="#university" 
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md border border-amber-400/20 bg-amber-400/5 hover:bg-amber-400/10 hover:border-amber-400/40 transition-all duration-300"
-              data-testid="link-university-header"
-            >
-              <GraduationCap className="w-3.5 h-3.5 text-amber-300/80" />
-              <span className="text-[10px] tracking-[0.15em] text-amber-200/80 font-medium uppercase">University</span>
-            </a>
           </div>
 
           <div className="flex items-center gap-4">
