@@ -1,0 +1,114 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AUTHENTICATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+VALID_USERS = {
+    # Equipo original
+    'john': 'Sc1T3ch_JOHN_2025!',
+    'analyst': 'Sc1T3ch_Analyst_2025!',
+    'demo': 'Sc1T3ch_DWEMO_2025!',
+    
+    # Equipo SciTech
+    'malena.peroni@sci.tech': 'Sc1T3ch_MP_2025!',
+    'juan.serur@sci.tech': 'Sc1T3ch_JS_2025!',
+    'martin.garay@sci.tech': 'Sc1T3ch_MG_2025!',
+    'federico.massimo@sci.tech': 'Sc1T3ch_FM_2025!',
+    'evelyn.mancini@sci.tech': 'Sc1T3ch_EM_2025!',
+    'sergio.canceco@sci.tech': 'Sc1T3ch_SC_2025!',
+    'eduardo.ploskinos@sci.tech': 'Sc1T3ch_EP_2025!',
+    'miguel.acevedos@sci.tech': 'Sc1T3ch_MA_2025!',
+    'patricio.barba@sci.tech': 'Sc1T3ch_PB_2025!',
+    'nicolas.fortunato@sci.tech': 'Sc1T3ch_NF_2025!',
+    'juan.gallego@sci.tech': 'Sc1T3ch_JG_2025!',
+    'gregoria.rodriguez@sci.tech': 'Sc1T3ch_GR_2025!',
+    'ricardo.centeno@sci.tech': 'Sc1T3ch_RC_2025!',
+    'tobias.treutel@sci.tech': 'Sc1T3ch_TT_2025!',
+    'leonel.lalia@sci.tech': 'Sc1T3ch_LL_2025!',
+    'lucas.petronio@sci.tech': 'Sc1T3ch_LP_2026!THEYEAR',
+    'maximiliano.markous@sci.tech': 'Sc1T3ch_MM_2025!',
+    'stevo.ostoic@sci.tech': 'Sc1T3ch_SO_2025!',
+    'milton.muller@sci.tech': 'Sc1T3ch_MMu_2025!',
+    'fernando.segovia@sci.tech': 'Sc1T3ch_FS_2025!',
+    'luis.segovia@sci.tech': 'Sc1T3ch_LS_2025!',
+    'matias.romano@sci.tech': 'Sc1T3ch_MR_2025!',
+    'eduardo.picon@sci.tech': 'Sc1T3ch_EPi_2025!',
+    'alberto.cardenas@sci.tech': 'Sc1T3ch_AC_2025!',
+    'russellpharos@gmail.com': 'Sc1T3ch_JR_2025!',
+    'ihs@sci.tech': 'Sc1T3ch_IHS_2025!',
+}
+
+def check_password():
+    """Returns `True` if the user had a correct password."""
+    
+    def login_form():
+        """Form with widgets to collect user information"""
+        st.markdown("""
+        <style>
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: linear-gradient(145deg, #151b23 0%, #12171d 100%);
+            border: 1px solid #2a3441;
+            border-radius: 16px;
+        }
+        .login-title {
+            text-align: center;
+            color: #f0f4f8;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .login-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.markdown("### 🔐 SciTech Dashboard")
+            st.markdown("*GroWise Reporting System*")
+            st.markdown("---")
+            with st.form("credentials"):
+                username = st.text_input("Username", key="username")
+                password = st.text_input("Password", type="password", key="password")
+                submit = st.form_submit_button("Login", use_container_width=True)
+                if submit:
+                    password_entered()
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        username = st.session_state.get("username", "")
+        password = st.session_state.get("password", "")
+        if username in VALID_USERS and VALID_USERS[username] == password:
+            st.session_state["password_correct"] = True
+            st.session_state["current_user"] = username
+        else:
+            st.session_state["password_correct"] = False
+
+    # First run or logged out
+    if "password_correct" not in st.session_state:
+        login_form()
+        return False
+    
+    # Password incorrect
+    if not st.session_state["password_correct"]:
+        login_form()
+        st.error("User not known or password incorrect")
+        return False
+    
+    # Password correct
+    return True
+
+# Authentication gate
+if not check_password():
+    st.stop()
+
+# Clear cache on version change to ensure fresh deployment
+if 'app_version' not in st.session_state or st.session_state.app_version != VERSION:
+    st.cache_data.clear()
+    st.cache_resource.clear()
+    st.session_state.app_version = VERSION
