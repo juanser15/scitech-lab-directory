@@ -499,9 +499,10 @@ export default function Home() {
             >
               <div className="flex items-center gap-3">
                 <GraduationCap className="w-5 h-5 text-amber-400/80" />
-                <div className="flex items-baseline gap-3">
+                <div className="flex items-center gap-3">
                   <span className="text-sm font-medium text-amber-100 tracking-wide">SciTech University</span>
-                  <span className="text-[11px] text-slate-400">Courses & learning resources</span>
+                  <span className="px-2 py-0.5 text-[9px] font-semibold tracking-wider uppercase rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30">New</span>
+                  <span className="hidden sm:inline text-[11px] text-slate-400">Courses & learning resources</span>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-amber-300/50 group-hover:text-amber-300 group-hover:translate-x-1 transition-all" />
