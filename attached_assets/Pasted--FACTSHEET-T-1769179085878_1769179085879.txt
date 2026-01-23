@@ -1,0 +1,54 @@
+    # ═══════════════════════════════════════════════════════════════════════════
+    # FACTSHEET TAB
+    # ═══════════════════════════════════════════════════════════════════════════
+    with tab_factsheet:
+        if nav_file is None and not local_data_exists:
+            st.markdown(f"""
+                <div style="background: {COLORS['bg_card']}; border: 1px solid {COLORS['border']}; border-radius: 12px; padding: 40px; text-align: center;">
+                    <h3 style="color: {COLORS['text_primary']}; margin-bottom: 12px;">Upload GROWISE NAV Data</h3>
+                    <p style="color: {COLORS['text_secondary']};">Upload your quarterly NAV time series to view comprehensive analytics.</p>
+                    <p style="color: {COLORS['text_muted']}; font-size: 12px; margin-top: 16px;">Expected format: Date column + NAV column</p>
+                </div>
+            """, unsafe_allow_html=True)
+        else:
+            # Load from local file or uploaded file
+            if local_data_exists:
+                nav_df = load_excel(open(LOCAL_DATA_FILE, 'rb').read())
+            else:
+                nav_df = load_excel(nav_file.getvalue())
+            
+            # Fetch benchmark data
+            benchmark_df = None
+            benchmark_nav_aligned = None
+            
+            if use_benchmark and selected_benchmark:
+                with st.spinner(f"Fetching {selected_benchmark} from Yahoo Finance..."):
+                    try:
+                        ticker = BENCHMARK_TICKERS[selected_benchmark]
+                        date_col = nav_df.columns[0]
+                        
+                        # Get date range from NAV data
+                        dates = pd.to_datetime(nav_df[date_col])
+                        start_date = dates.min().strftime('%Y-%m-%d')
+                        end_date = (dates.max() + timedelta(days=30)).strftime('%Y-%m-%d')
+                        
+                        # Fetch Yahoo data
+                        bench_data = fetch_yahoo_data(ticker, start_date, end_date)
+                        
+                        if bench_data is not None:
+                            # Resample to quarterly to match NAV frequency
+                            bench_quarterly = bench_data.resample('QE').last()
+                            bench_quarterly = bench_quarterly.reset_index()
+                            bench_quarterly.columns = ['Date', selected_benchmark]
+                            benchmark_df = bench_quarterly
+                    except Exception as e:
+                        st.warning(f"Could not fetch benchmark: {e}")
+            
+            # Calculate metrics
+            with st.spinner("Calculating metrics..."):
+                metrics, benchmark_metrics, sparklines = calculate_all_metrics(nav_df, benchmark_df)
+            
+            # Override Last N Years CAGR (hardcoded until data is fixed)
+            metrics["Last 3Y CAGR"] = 17.80
+            metrics["Last 5Y CAGR"] = 8.45
+            metrics["Last 10Y CAGR"] = 10.40
