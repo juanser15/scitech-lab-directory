@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import type { Notification } from "@shared/schema";
 import { 
   Grid3X3, 
   TrendingUp, 
@@ -14,7 +17,9 @@ import {
   BarChart3,
   GraduationCap,
   BookOpen,
-  ChevronRight
+  ChevronRight,
+  Bell,
+  X
 } from "lucide-react";
 import bgImage from "../assets/generated_images/glowing_network_constellation_dark.png";
 
@@ -279,6 +284,143 @@ function LiveIndicator() {
   );
 }
 
+function NotificationBell() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const { data: notifications = [], isLoading } = useQuery<Notification[]>({
+    queryKey: ["/api/notifications"],
+  });
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const getTypeIcon = (type: string) => {
+    switch(type) {
+      case "new": return "NEW";
+      case "update": return "UPD";
+      case "announcement": return "ANN";
+      default: return "";
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch(type) {
+      case "new": return "bg-emerald-500/20 text-emerald-300 border-emerald-400/30";
+      case "update": return "bg-blue-500/20 text-blue-300 border-blue-400/30";
+      case "announcement": return "bg-amber-500/20 text-amber-300 border-amber-400/30";
+      default: return "bg-slate-500/20 text-slate-300 border-slate-400/30";
+    }
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-2 rounded-lg border border-amber-400/20 bg-slate-800/50">
+        <Bell className="w-4 h-4 text-amber-200/40 animate-pulse" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setIsOpen(!isOpen)}
+        className="relative border border-amber-400/20 bg-slate-800/50"
+        data-testid="button-notifications"
+      >
+        <Bell className="w-4 h-4 text-amber-200/70" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-amber-500 text-slate-900 rounded-full">
+            {unreadCount}
+          </span>
+        )}
+      </Button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <div 
+              className="fixed inset-0 z-40" 
+              onClick={() => setIsOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className="absolute right-0 top-full mt-2 w-80 sm:w-96 z-50 rounded-xl border border-amber-400/20 bg-slate-900/95 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden"
+              data-testid="notifications-dropdown"
+            >
+              <div className="flex items-center justify-between px-4 py-3 border-b border-amber-200/10">
+                <h3 className="text-sm font-semibold text-amber-100 tracking-wide">Notifications</h3>
+                <Button 
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsOpen(false)}
+                  className="h-7 w-7"
+                >
+                  <X className="w-4 h-4 text-slate-400" />
+                </Button>
+              </div>
+
+              <div className="max-h-80 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="px-4 py-8 text-center text-slate-500 text-sm">
+                    No notifications
+                  </div>
+                ) : (
+                  notifications.map((notif) => (
+                    <div
+                      key={notif.id}
+                      className={`px-4 py-3 border-b border-slate-800/50 ${!notif.read ? 'bg-amber-500/5' : ''}`}
+                      data-testid={`notification-item-${notif.id}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className={`px-1.5 py-0.5 text-[8px] font-bold tracking-wider rounded border ${getTypeColor(notif.type)}`}>
+                          {getTypeIcon(notif.type)}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <h4 className={`text-sm font-medium truncate ${!notif.read ? 'text-amber-100' : 'text-slate-300'}`}>
+                              {notif.title}
+                            </h4>
+                            <span className="text-[10px] text-slate-500 whitespace-nowrap">
+                              {formatDate(notif.date)}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                            {notif.message}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className="px-4 py-2 border-t border-amber-200/10 bg-slate-800/30">
+                <span className="text-[10px] text-slate-500 uppercase tracking-wide">
+                  {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+                </span>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function GreetingBanner() {
   const [greeting, setGreeting] = useState("");
   const [quote, setQuote] = useState({ text: "", author: "" });
@@ -458,6 +600,7 @@ export default function Home() {
 
           <div className="flex items-center gap-4">
             <WorldClocks />
+            <NotificationBell />
             <LiveIndicator />
           </div>
         </motion.header>
