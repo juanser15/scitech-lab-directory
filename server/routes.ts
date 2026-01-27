@@ -49,5 +49,14 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/notifications", async (req, res) => {
+    try {
+      const notifications = await storage.getNotifications();
+      res.json(notifications);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch notifications" });
+    }
+  });
+
   return httpServer;
 }
