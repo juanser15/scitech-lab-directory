@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import type { Notification } from "@shared/schema";
 import { 
@@ -291,6 +292,34 @@ function NotificationBell() {
     queryKey: ["/api/notifications"],
   });
 
+  const markReadMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest("PATCH", `/api/notifications/${id}/read`);
+    },
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: ["/api/notifications"] });
+      const previousNotifications = queryClient.getQueryData<Notification[]>(["/api/notifications"]);
+      queryClient.setQueryData<Notification[]>(["/api/notifications"], (old) =>
+        old?.map((n) => (n.id === id ? { ...n, read: true } : n))
+      );
+      return { previousNotifications };
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previousNotifications) {
+        queryClient.setQueryData(["/api/notifications"], context.previousNotifications);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
+    },
+  });
+
+  const handleNotificationClick = (notif: Notification) => {
+    if (!notif.read) {
+      markReadMutation.mutate(notif.id);
+    }
+  };
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const getTypeIcon = (type: string) => {
@@ -382,7 +411,8 @@ function NotificationBell() {
                   notifications.map((notif) => (
                     <div
                       key={notif.id}
-                      className={`px-4 py-3 border-b border-slate-800/50 ${!notif.read ? 'bg-amber-500/5' : ''}`}
+                      onClick={() => handleNotificationClick(notif)}
+                      className={`px-4 py-3 border-b border-slate-800/50 cursor-pointer ${!notif.read ? 'bg-amber-500/5' : ''}`}
                       data-testid={`notification-item-${notif.id}`}
                     >
                       <div className="flex items-start gap-3">
@@ -599,8 +629,8 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <WorldClocks />
             <NotificationBell />
+            <WorldClocks />
             <LiveIndicator />
           </div>
         </motion.header>

@@ -6,6 +6,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getNotifications(): Promise<Notification[]>;
+  markNotificationRead(id: string): Promise<Notification | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -69,6 +70,14 @@ export class MemStorage implements IStorage {
 
   async getNotifications(): Promise<Notification[]> {
     return this.notifications.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  async markNotificationRead(id: string): Promise<Notification | undefined> {
+    const notif = this.notifications.find(n => n.id === id);
+    if (notif) {
+      notif.read = true;
+    }
+    return notif;
   }
 }
 
