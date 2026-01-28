@@ -666,7 +666,9 @@ export default function Home() {
             className="mt-12 pt-8 border-t border-amber-200/10"
           >
             <a
-              href="#"
+              href="https://campus.sci-techlab.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group flex items-center justify-between py-4 px-5 rounded-lg border border-amber-400/10 bg-amber-400/5 hover:border-amber-400/25 hover:bg-amber-400/10 transition-all duration-300"
               data-testid="card-university"
             >
