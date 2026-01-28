@@ -1,0 +1,12 @@
+node_modules
+.git
+*.md
+.env*
+pyproject.toml
+uv.lock
+nixpacks.toml
+Procfile
+railway.json
+.replit
+replit.nix
+.upm
