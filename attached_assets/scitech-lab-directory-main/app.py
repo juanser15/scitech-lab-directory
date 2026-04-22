@@ -29,7 +29,7 @@ app.title = "SciTech Lab"
 # ======================
 TARGETS = {
     "SigmaLab": "https://sigma.sci-techlab.com",
-    "GroWise":  "https://growise.sci-techlab.com",
+    "GroWise":  "https://streamlit-dashboard-1.replit.app", #"https://growise.sci-techlab.com",
     "Atlas":    "https://atlas.sci-techlab.com",
     "Client360": "https://script.google.com/a/macros/sci.tech/s/AKfycby_6WGTvIZ7MNqJOLF32s-uucxGdwRQj7zmP-FPahZ7gsZYZLQxQPWpIBuWvd_htFOs/exec",
 }
